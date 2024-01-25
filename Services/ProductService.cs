@@ -1,46 +1,58 @@
+using invenio.Data;
 using invenio.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace invenio.Services;
 
-public static class ProductService
+public class ProductService
 {
-    static List<Product> Products { get; }
-    static int nextId = 3;
-    static ProductService()
+    private readonly InvenioContext _context;
+
+    public ProductService(InvenioContext context)
     {
-        Products = new List<Product>
-        {
-            new Product { Id = 1, Name = "Tomato Soup", IsApproved = true },
-            new Product { Id = 2, Name = "Yo-yo", IsApproved = false },
-            new Product { Id = 3, Name = "Hammer", IsApproved = true }
-        };
+        _context = context;
     }
-    
-    public static List<Product> GetAll() => Products;
-    
-    public static Product Get(int id) => Products.FirstOrDefault(p => p.Id == id);
-    
-    public static void Add(Product product)
+
+    public IEnumerable<Product> GetAll()
     {
-        product.Id = ++nextId;
-        Products.Add(product);
+        return _context.Products
+            .AsNoTracking()
+            .ToList();
     }
-    
-    public static void Delete(int id)
+
+    public Product? GetById(int id)
     {
-        var product = Get(id);
-        if(product is null)
+        return _context.Products
+            .AsNoTracking()
+            // .Include(product => product.Category) // Join
+            .SingleOrDefault(product => product.Id == id);
+    }
+
+    public Product Add(Product product)
+    {
+        _context.Products.Add(product);
+        _context.SaveChanges();
+
+        return product;
+    }
+
+    public Product Update(Product product)
+    {
+        _context.Products.Update(product);
+        // _context.Entry(product).CurrentValues.SetValues(product); // Partial update
+
+        _context.SaveChanges();
+
+        return product;
+    }
+
+    public void Delete(int id)
+    {
+        var product = _context.Products.Find(id);
+        if (product is null)
             return;
-        
-        Products.Remove(product);
-    }
-    
-    public static void Update(Product product)
-    {
-        var index = Products.FindIndex(p => p.Id == product.Id);
-        if(index == -1)
-            return;
-        
-        Products[index] = product;
+
+        _context.Products.Remove(product);
+        _context.SaveChanges();
     }
 }

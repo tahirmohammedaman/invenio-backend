@@ -8,29 +8,35 @@ namespace invenio.Controllers;
 [Route("[controller]")]
 public class ProductController : ControllerBase
 {
-    public ProductController()
+    private readonly ProductService _service;
+    public ProductController(ProductService service)
     {
+        _service = service;
     }
 
     [HttpGet]
-    public ActionResult<List<Product>> GetAll() => ProductService.GetAll();
+    public IEnumerable<Product> GetAll()
+    {
+        return _service.GetAll();
+    }
 
     [HttpGet("{id}")]
-    public ActionResult<Product> Get(int id)
+    public ActionResult<Product> GetById(int id)
     {
-        var product = ProductService.Get(id);
+        var product = _service.GetById(id);
 
-        if (product == null)
+        if (product is null)
             return NotFound();
 
         return product;
     }
 
     [HttpPost]
-    public IActionResult Create(Product product)
+    public IActionResult Add(Product newProduct)
     {
-        ProductService.Add(product);
-        return CreatedAtAction(nameof(Get), new { id = product.Id }, product);
+        Console.WriteLine(newProduct.ToString());
+        var product = _service.Add(newProduct);
+        return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
     }
 
     [HttpPut("{id}")]
@@ -39,22 +45,22 @@ public class ProductController : ControllerBase
         if (id != product.Id)
             return BadRequest();
 
-        var existingProduct = ProductService.Get(id);
+        var existingProduct = _service.GetById(id);
         if (existingProduct is null)
             return NotFound();
         
-        ProductService.Update(product);
+        _service.Update(product);
         return NoContent();
     }
 
-    [HttpDelete]
+    [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
-        var product = ProductService.Get(id);
+        var product = _service.GetById(id);
         if (product is null)
             return NotFound();
         
-        ProductService.Delete(id);
+        _service.Delete(id);
         return NoContent();
     }
 }
