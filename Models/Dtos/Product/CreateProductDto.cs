@@ -1,11 +1,9 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace invenio.Models;
+namespace invenio.Models.Dtos.Product;
 
-public class Product
+public class CreateProductDto
 {
-    [Key] public Guid ProductId { get; set; }
     [Required] public string Name { get; set; }
     [Required] public string Description { get; set; }
     public bool IsApproved { get; set; }
