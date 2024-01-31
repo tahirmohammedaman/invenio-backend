@@ -69,6 +69,7 @@ public class ProductController : ControllerBase
                 return BadRequest("Invalid model object");
 
             var product = _mapper.Map<Product>(createProductDto);
+            // product.ProductId= Guid.NewGuid();
             _repository.Product.CreateProduct(product);
             _repository.Save();
 

@@ -1,4 +1,5 @@
 using invenio.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace invenio.Repositories.Product;
 
@@ -13,13 +14,14 @@ public class ProductRepository: RepositoryBase<Models.Product>, IProductReposito
             .OrderBy(product => product.Name)
             .ToList();
     
-    public Models.Product GetProductById(Guid id) =>
+    public Models.Product? GetProductById(Guid id) =>
         FindByCondition(product => product.ProductId.Equals(id))
+            .Include(product => product.Category)
             .FirstOrDefault();
     
     public void CreateProduct(Models.Product product) => Create(product);
     
-    public void UpdateProduct(Models.Product product) => Update(product);
+    public void UpdateProduct(Models.Product product) => Context.Entry(product).State = EntityState.Modified;
     
     public void DeleteProduct(Models.Product product) => Delete(product);
     
