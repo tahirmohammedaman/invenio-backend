@@ -26,4 +26,10 @@ public class Stock
 
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Sku { get; set; } = Guid.NewGuid();
+    
+    [Required]
+    [ForeignKey("Warehouse")]
+    public Guid WarehouseId { get; set; }
+    
+    public virtual Warehouse Warehouse { get; set; }
 }

@@ -6,6 +6,7 @@ public record StockDto
 {
     public Guid StockId { get; set; }
     public ProductDto Product { get; set; }
+    public WarehouseDto Warehouse { get; set; }
     public int StockQuantity { get; set; }
     public int LowStockThreshold { get; set; }
     public int QuantityPerUnit { get; set; }
@@ -15,6 +16,7 @@ public record StockDto
 public record CreateStockDto
 {
     public Guid ProductId { get; set; }
+    public Guid WarehouseId { get; set; }
     public int StockQuantity { get; set; }
     public int LowStockThreshold { get; set; }
     public int QuantityPerUnit { get; set; }
@@ -22,6 +24,7 @@ public record CreateStockDto
 
 public record UpdateStockDto
 {
+    public Guid? WarehouseId { get; set; } = null;
     public int? StockQuantity { get; set; } = null;
     public int? LowStockThreshold { get; set; } = null;
     public int? QuantityPerUnit { get; set; } = null;

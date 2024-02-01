@@ -12,6 +12,7 @@ public class StockRepository : RepositoryBase<Models.Stock>, IStockRepository
     public IEnumerable<Models.Stock> GetAllStocks() =>
         FindAll()
             .OrderBy(stock => stock.Product.Name)
+            .Include(stock => stock.Warehouse)
             .Include(stock => stock.Product)
             .ThenInclude(product => product.Category)
             .ToList();

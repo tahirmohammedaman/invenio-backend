@@ -4,6 +4,7 @@ using invenio.Repositories.Product;
 using invenio.Repositories.Stock;
 using invenio.Repositories.Supplier;
 using invenio.Repositories.Supply;
+using invenio.Repositories.Warehouse;
 
 namespace invenio.Repositories;
 
@@ -16,6 +17,7 @@ public class RepositoryWrapper : IRepositoryWrapper
     private ISupplierRepository _supplier;
     private ISupplyRepository _supply;
     private IStockRepository _stock;
+    private IWarehouseRepository _warehouse;
     
     public RepositoryWrapper(InvenioContext context)
     {
@@ -74,6 +76,17 @@ public class RepositoryWrapper : IRepositoryWrapper
                 _stock = new StockRepository(_context);
             
             return _stock;
+        }
+    }
+    
+    public IWarehouseRepository Warehouse
+    {
+        get
+        {
+            if (_warehouse is null)
+                _warehouse = new WarehouseRepository(_context);
+            
+            return _warehouse;
         }
     }
     
