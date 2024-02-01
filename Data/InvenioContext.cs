@@ -20,4 +20,6 @@ public class InvenioContext : DbContext
     public DbSet<Stock> Stocks => Set<Stock>();
     
     public DbSet<Warehouse> Warehouses => Set<Warehouse>();
+    
+    public DbSet<SupplyOrder> SupplyOrders => Set<SupplyOrder>();
 }

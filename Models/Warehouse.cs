@@ -31,4 +31,6 @@ public class Warehouse
     public double? Longitude { get; set; }
     
     public virtual ICollection<Stock>? Stocks { get; set; }
+    
+    public virtual ICollection<SupplyOrder>? SupplyOrders { get; set; }
 }
