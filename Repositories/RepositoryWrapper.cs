@@ -1,6 +1,7 @@
 using invenio.Data;
 using invenio.Repositories.Category;
 using invenio.Repositories.Product;
+using invenio.Repositories.Stock;
 using invenio.Repositories.Supplier;
 using invenio.Repositories.Supply;
 
@@ -14,6 +15,7 @@ public class RepositoryWrapper : IRepositoryWrapper
     private ICategoryRepository _category;
     private ISupplierRepository _supplier;
     private ISupplyRepository _supply;
+    private IStockRepository _stock;
     
     public RepositoryWrapper(InvenioContext context)
     {
@@ -61,6 +63,17 @@ public class RepositoryWrapper : IRepositoryWrapper
                 _supply = new SupplyRepository(_context);
             
             return _supply;
+        }
+    }
+    
+    public IStockRepository Stock
+    {
+        get
+        {
+            if (_stock is null)
+                _stock = new StockRepository(_context);
+            
+            return _stock;
         }
     }
     

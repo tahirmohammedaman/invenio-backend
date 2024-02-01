@@ -1,5 +1,6 @@
 using invenio.Repositories.Category;
 using invenio.Repositories.Product;
+using invenio.Repositories.Stock;
 using invenio.Repositories.Supplier;
 using invenio.Repositories.Supply;
 
@@ -14,6 +15,8 @@ public interface IRepositoryWrapper
     ISupplierRepository Supplier { get; }
     
     ISupplyRepository Supply { get; }
+    
+    IStockRepository Stock { get; }
     
     void Save();
 }

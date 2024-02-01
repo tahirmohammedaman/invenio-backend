@@ -15,6 +15,7 @@ public record ProductDto
     public int? MinimumOrderQuantity { get; set; }
     public int? MaximumOrderQuantity { get; set; }
     public ICollection<SupplyDto>? Supplies { get; set; }
+    public StockDto? Stock { get; set; }
 }
 
 public record CreateProductDto

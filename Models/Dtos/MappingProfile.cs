@@ -32,6 +32,12 @@ public class MappingProfile : Profile
         CreateMap<CreateSupplyDto, Models.Supply>();
         CreateMap<UpdateSupplyDto, Models.Supply>()
             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+        
+        // Stock
+        CreateMap<Models.Stock, StockDto>();
+        CreateMap<CreateStockDto, Models.Stock>();
+        CreateMap<UpdateStockDto, Models.Stock>()
+            .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
 
     }
 }
