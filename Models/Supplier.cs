@@ -27,4 +27,6 @@ public class Supplier
     public string? SecondaryPhoneNumber { get; set; }
     
     public string? ManagerName { get; set; }
+    
+    public virtual ICollection<Supply> Supplies { get; set; }
 }

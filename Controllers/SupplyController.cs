@@ -1,33 +1,33 @@
 using AutoMapper;
 using invenio.Models;
-using invenio.Models.Dtos.Product;
+using invenio.Models.Dtos;
 using invenio.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace invenio.Controllers;
 
 [ApiController]
-[Route("/api/products")]
-public class ProductController : ControllerBase
+[Route("/api/supplies")]
+public class SupplyController : ControllerBase
 {
     private readonly IRepositoryWrapper _repository;
     private readonly IMapper _mapper;
     
-    public ProductController(IRepositoryWrapper repository, IMapper mapper)
+    public SupplyController(IRepositoryWrapper repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;
     }
     
     [HttpGet]
-    public ActionResult<IEnumerable<ProductDto>> GetAll()
+    public ActionResult<IEnumerable<SupplyDto>> GetAll()
     {
         try
         {
-            var products = _repository.Product.GetAllProducts();
-            var productsResponse = _mapper.Map<IEnumerable<ProductDto>>(products);
+            var supplies = _repository.Supply.GetAllSupplies();
+            var suppliesResponse = _mapper.Map<IEnumerable<SupplyDto>>(supplies);
             
-            return Ok(productsResponse);
+            return Ok(suppliesResponse);
         }
         catch (Exception e)
         {
@@ -35,19 +35,19 @@ public class ProductController : ControllerBase
             return StatusCode(500, "Internal server error");
         }
     }
-
+    
     [HttpGet("{id}")]
-    public ActionResult<ProductDto> GetProductById(Guid id)
+    public ActionResult<SupplyDto> GetSupplyById(Guid id)
     {
         try
         {
-            var product = _repository.Product.GetProductById(id);
+            var supply = _repository.Supply.GetSupplyById(id);
 
-            if (product is null)
+            if (supply is null)
                 return NotFound();
 
-            var productResponse = _mapper.Map<ProductDto>(product);
-            return Ok(productResponse);
+            var supplyResponse = _mapper.Map<SupplyDto>(supply);
+            return Ok(supplyResponse);
         }
         catch (Exception e)
         {
@@ -55,19 +55,18 @@ public class ProductController : ControllerBase
             return StatusCode(500, "Internal server error");
         }
     }
-
+    
     [HttpPost]
-    public IActionResult CreateProduct([FromBody] CreateProductDto createProductDto)
+    public IActionResult CreateSupply([FromBody] CreateSupplyDto createSupplyDto)
     {
         try
         {
-            var product = _mapper.Map<Product>(createProductDto);
-            _repository.Product.CreateProduct(product);
+            var supply = _mapper.Map<Supply>(createSupplyDto);
+            _repository.Supply.CreateSupply(supply);
             _repository.Save();
 
-            var productDto = _mapper.Map<ProductDto>(product);
-
-            return CreatedAtAction(nameof(GetProductById), new { id = product.ProductId }, productDto);
+            var supplyDto = _mapper.Map<SupplyDto>(supply);
+            return CreatedAtAction(nameof(GetSupplyById), new { id = supply.SupplyId }, supplyDto);
         }
         catch (Exception e)
         {
@@ -77,18 +76,19 @@ public class ProductController : ControllerBase
     }
     
     [HttpPut("{id}")]
-    public IActionResult UpdateProduct(Guid id, [FromBody] UpdateProductDto updateProductDto)
+    public IActionResult UpdateSupply(Guid id, [FromBody] UpdateSupplyDto updateSupplyDto)
     {
         try
         {
-            var product = _repository.Product.GetProductById(id);
-            if (product is null)
+            var supply = _repository.Supply.GetSupplyById(id);
+
+            if (supply is null)
                 return NotFound();
-            
-            _mapper.Map(updateProductDto, product);
-            _repository.Product.UpdateProduct(product);
+
+            _mapper.Map(updateSupplyDto, supply);
+            _repository.Supply.UpdateSupply(supply);
             _repository.Save();
-            
+
             return NoContent();
         }
         catch (Exception e)
@@ -97,19 +97,20 @@ public class ProductController : ControllerBase
             return StatusCode(500, "Internal server error");
         }
     }
-    
+
     [HttpDelete("{id}")]
-    public IActionResult DeleteProduct(Guid id)
+    public IActionResult DeleteSupply(Guid id)
     {
         try
         {
-            var product = _repository.Product.GetProductById(id);
-            if (product is null)
+            var supply = _repository.Supply.GetSupplyById(id);
+
+            if (supply is null)
                 return NotFound();
-            
-            _repository.Product.DeleteProduct(product);
+
+            _repository.Supply.DeleteSupply(supply);
             _repository.Save();
-            
+
             return NoContent();
         }
         catch (Exception e)
@@ -118,4 +119,5 @@ public class ProductController : ControllerBase
             return StatusCode(500, "Internal server error");
         }
     }
+
 }

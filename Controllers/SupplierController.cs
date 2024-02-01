@@ -56,16 +56,17 @@ public class SupplierController : ControllerBase
     }
     
     [HttpPost]
-    public IActionResult CreateSupplier(CreateSupplierDto supplierDto)
+    public IActionResult CreateSupplier([FromBody] CreateSupplierDto createSupplierDto)
     {
         try
         {
-            var supplier = _mapper.Map<Models.Supplier>(supplierDto);
+            var supplier = _mapper.Map<Models.Supplier>(createSupplierDto);
             _repository.Supplier.CreateSupplier(supplier);
             _repository.Save();
 
-            var supplierResponse = _mapper.Map<SupplierDto>(supplier);
-            return Ok(supplierResponse);
+            var supplierDto = _mapper.Map<SupplierDto>(supplier);
+            
+            return CreatedAtAction(nameof(GetSupplierById), new {id = supplier.SupplierId}, supplierDto);
         }
         catch (Exception e)
         {
@@ -75,7 +76,7 @@ public class SupplierController : ControllerBase
     }
     
     [HttpPut("{id}")]
-    public IActionResult UpdateSupplier(Guid id, UpdateSupplierDto supplierDto)
+    public IActionResult UpdateSupplier(Guid id, [FromBody] UpdateSupplierDto supplierDto)
     {
         try
         {

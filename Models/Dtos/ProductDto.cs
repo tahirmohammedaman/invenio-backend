@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using invenio.Models.Dtos.Category;
 
 namespace invenio.Models.Dtos.Product;
 
@@ -9,10 +10,11 @@ public record ProductDto
     public string? ShortDescription { get; set; }
     public string? Description { get; set; }
     public IList<string>? Images { get; set; }
-    public Models.Category? Category { get; set; }
+    public CategoryDto? Category { get; set; }
     public double Price { get; set; }
     public int? MinimumOrderQuantity { get; set; }
     public int? MaximumOrderQuantity { get; set; }
+    public ICollection<SupplyDto>? Supplies { get; set; }
 }
 
 public record CreateProductDto

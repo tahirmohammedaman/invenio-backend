@@ -2,6 +2,7 @@ using invenio.Data;
 using invenio.Repositories.Category;
 using invenio.Repositories.Product;
 using invenio.Repositories.Supplier;
+using invenio.Repositories.Supply;
 
 namespace invenio.Repositories;
 
@@ -12,6 +13,7 @@ public class RepositoryWrapper : IRepositoryWrapper
     private IProductRepository _product;
     private ICategoryRepository _category;
     private ISupplierRepository _supplier;
+    private ISupplyRepository _supply;
     
     public RepositoryWrapper(InvenioContext context)
     {
@@ -48,6 +50,17 @@ public class RepositoryWrapper : IRepositoryWrapper
                 _supplier = new SupplierRepository(_context);
             
             return _supplier;
+        }
+    }
+    
+    public ISupplyRepository Supply
+    {
+        get
+        {
+            if (_supply is null)
+                _supply = new SupplyRepository(_context);
+            
+            return _supply;
         }
     }
     

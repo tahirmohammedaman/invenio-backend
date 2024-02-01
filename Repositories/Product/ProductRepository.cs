@@ -17,6 +17,7 @@ public class ProductRepository: RepositoryBase<Models.Product>, IProductReposito
     public Models.Product? GetProductById(Guid id) =>
         FindByCondition(product => product.ProductId.Equals(id))
             .Include(product => product.Category)
+            .Include(product => product.Supplies)
             .FirstOrDefault();
     
     public void CreateProduct(Models.Product product) => Create(product);
