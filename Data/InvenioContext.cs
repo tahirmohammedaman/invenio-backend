@@ -11,4 +11,5 @@ public class InvenioContext : DbContext
     
     public DbSet<Product> Products => Set<Product>();
     public DbSet<Category> Categories => Set<Category>();
+    public DbSet<Supplier> Suppliers => Set<Supplier>();
 }
