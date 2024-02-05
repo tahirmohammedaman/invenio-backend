@@ -1,11 +1,13 @@
 using AutoMapper;
 using invenio.Models.Dtos.Category;
 using invenio.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace invenio.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("/api/categories")]
 public class CategoryController : ControllerBase
 {

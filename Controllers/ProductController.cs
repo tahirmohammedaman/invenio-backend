@@ -3,11 +3,13 @@ using invenio.Models;
 using invenio.Models.Dtos.Product;
 using invenio.Repositories;
 using invenio.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace invenio.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("/api/products")]
 public class ProductController : ControllerBase
 {

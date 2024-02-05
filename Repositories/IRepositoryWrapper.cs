@@ -4,6 +4,7 @@ using invenio.Repositories.Stock;
 using invenio.Repositories.Supplier;
 using invenio.Repositories.Supply;
 using invenio.Repositories.SupplyOrder;
+using invenio.Repositories.User;
 using invenio.Repositories.Warehouse;
 
 namespace invenio.Repositories;
@@ -23,6 +24,8 @@ public interface IRepositoryWrapper
     IWarehouseRepository Warehouse { get; }
     
     ISupplyOrderRepository SupplyOrder { get; }
+    
+    IUserRepository User { get; }
     
     void Save();
 }

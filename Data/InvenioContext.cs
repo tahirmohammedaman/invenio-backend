@@ -22,4 +22,6 @@ public class InvenioContext : DbContext
     public DbSet<Warehouse> Warehouses => Set<Warehouse>();
     
     public DbSet<SupplyOrder> SupplyOrders => Set<SupplyOrder>();
+    
+    public DbSet<User> Users => Set<User>();
 }
