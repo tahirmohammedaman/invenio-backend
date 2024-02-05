@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using invenio.Data;
 using invenio.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,5 +47,13 @@ app.UseCors();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Uploads")),
+    RequestPath = "/api/static"
+});
+
+app.Environment.IsDevelopment();
 
 app.Run();

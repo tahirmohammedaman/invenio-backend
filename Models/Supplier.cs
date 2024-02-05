@@ -12,6 +12,8 @@ public class Supplier
     [Required]
     public string Name { get; set; }
     
+    public string? LogoPath { get; set; }
+    
     [Required]
     public string Country { get; set; }
     

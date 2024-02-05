@@ -1,4 +1,5 @@
 using AutoMapper;
+using invenio.Services;
 using invenio.Models.Dtos;
 using invenio.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -60,6 +61,9 @@ public class SupplierController : ControllerBase
     {
         try
         {
+            if (createSupplierDto.Logo is not null)
+                createSupplierDto.LogoPath = FileService.UploadFile(createSupplierDto.Logo);
+            
             var supplier = _mapper.Map<Models.Supplier>(createSupplierDto);
             _repository.Supplier.CreateSupplier(supplier);
             _repository.Save();
@@ -76,15 +80,18 @@ public class SupplierController : ControllerBase
     }
     
     [HttpPut("{id}")]
-    public IActionResult UpdateSupplier(Guid id, [FromForm] UpdateSupplierDto supplierDto)
+    public IActionResult UpdateSupplier(Guid id, [FromForm] UpdateSupplierDto updateSupplierDto)
     {
         try
         {
+            if (updateSupplierDto.Logo is not null)
+                updateSupplierDto.LogoPath = FileService.UploadFile(updateSupplierDto.Logo);
+            
             var supplier = _repository.Supplier.GetSupplierById(id);
             if (supplier is null)
                 return NotFound();
 
-            _mapper.Map(supplierDto, supplier);
+            _mapper.Map(updateSupplierDto, supplier);
             _repository.Supplier.UpdateSupplier(supplier);
             _repository.Save();
 
