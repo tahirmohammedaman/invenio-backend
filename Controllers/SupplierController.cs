@@ -61,10 +61,10 @@ public class SupplierController : ControllerBase
     {
         try
         {
-            if (createSupplierDto.Logo is not null)
-                createSupplierDto.LogoPath = FileService.UploadFile(createSupplierDto.Logo);
-            
             var supplier = _mapper.Map<Models.Supplier>(createSupplierDto);
+            if (createSupplierDto.Logo is not null)
+                supplier.LogoPath = FileService.UploadFile(createSupplierDto.Logo);
+            
             _repository.Supplier.CreateSupplier(supplier);
             _repository.Save();
 
@@ -84,14 +84,18 @@ public class SupplierController : ControllerBase
     {
         try
         {
-            if (updateSupplierDto.Logo is not null)
-                updateSupplierDto.LogoPath = FileService.UploadFile(updateSupplierDto.Logo);
-            
             var supplier = _repository.Supplier.GetSupplierById(id);
             if (supplier is null)
                 return NotFound();
 
             _mapper.Map(updateSupplierDto, supplier);
+            if (updateSupplierDto.Logo is not null)
+            {
+                if (supplier.LogoPath is not null)
+                    FileService.DeleteFile(supplier.LogoPath);
+                supplier.LogoPath = FileService.UploadFile(updateSupplierDto.Logo);
+            }
+
             _repository.Supplier.UpdateSupplier(supplier);
             _repository.Save();
 
@@ -113,6 +117,9 @@ public class SupplierController : ControllerBase
             var supplier = _repository.Supplier.GetSupplierById(id);
             if (supplier is null)
                 return NotFound();
+            
+            if (supplier.LogoPath is not null)
+                FileService.DeleteFile(supplier.LogoPath);
             
             _repository.Supplier.DeleteSupplier(supplier);
             _repository.Save();

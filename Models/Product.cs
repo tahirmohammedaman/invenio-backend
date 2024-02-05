@@ -18,7 +18,13 @@ public class Product
     public string? Description { get; set; }
     
     [Required]
-    public IList<string> Images { get; set; }
+    public string Image1Path { get; set; }
+    
+    public string? Image2Path { get; set; }
+    
+    public string? Image3Path { get; set; }
+    
+    public string? Image4Path { get; set; }
     
     [Required]
     [ForeignKey("Category")]
