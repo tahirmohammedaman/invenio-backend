@@ -57,7 +57,7 @@ public class WarehouseController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult CreateWarehouse([FromBody] CreateWarehouseDto createWarehouseDto)
+    public IActionResult CreateWarehouse([FromForm] CreateWarehouseDto createWarehouseDto)
     {
         try
         {
@@ -77,7 +77,7 @@ public class WarehouseController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public IActionResult UpdateWarehouse(Guid id, [FromBody] UpdateWarehouseDto updateWarehouseDto)
+    public IActionResult UpdateWarehouse(Guid id, [FromForm] UpdateWarehouseDto updateWarehouseDto)
     {
         try
         {

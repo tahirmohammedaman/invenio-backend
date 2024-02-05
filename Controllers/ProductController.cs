@@ -57,7 +57,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult CreateProduct([FromBody] CreateProductDto createProductDto)
+    public IActionResult CreateProduct([FromForm] CreateProductDto createProductDto)
     {
         try
         {
@@ -77,7 +77,7 @@ public class ProductController : ControllerBase
     }
     
     [HttpPut("{id}")]
-    public IActionResult UpdateProduct(Guid id, [FromBody] UpdateProductDto updateProductDto)
+    public IActionResult UpdateProduct(Guid id, [FromForm] UpdateProductDto updateProductDto)
     {
         try
         {

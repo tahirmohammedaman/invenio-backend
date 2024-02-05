@@ -96,7 +96,7 @@ public class CategoryController : ControllerBase
     }
     
     [HttpPut("{id}")]
-    public ActionResult UpdateCategory(Guid id, [FromBody] UpdateCategoryDto updateCategoryDto)
+    public ActionResult UpdateCategory(Guid id, [FromForm] UpdateCategoryDto updateCategoryDto)
     {
         try
         {

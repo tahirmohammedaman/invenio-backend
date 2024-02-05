@@ -56,7 +56,7 @@ public class StockController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult CreateStock([FromBody] CreateStockDto createStockDto)
+    public IActionResult CreateStock([FromForm] CreateStockDto createStockDto)
     {
         try
         {
@@ -76,7 +76,7 @@ public class StockController : ControllerBase
     }
     
     [HttpPut("{id}")]
-    public IActionResult UpdateStock(Guid id, [FromBody] UpdateStockDto updateStockDto)
+    public IActionResult UpdateStock(Guid id, [FromForm] UpdateStockDto updateStockDto)
     {
         try
         {

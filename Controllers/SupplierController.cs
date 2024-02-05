@@ -56,7 +56,7 @@ public class SupplierController : ControllerBase
     }
     
     [HttpPost]
-    public IActionResult CreateSupplier([FromBody] CreateSupplierDto createSupplierDto)
+    public IActionResult CreateSupplier([FromForm] CreateSupplierDto createSupplierDto)
     {
         try
         {
@@ -76,7 +76,7 @@ public class SupplierController : ControllerBase
     }
     
     [HttpPut("{id}")]
-    public IActionResult UpdateSupplier(Guid id, [FromBody] UpdateSupplierDto supplierDto)
+    public IActionResult UpdateSupplier(Guid id, [FromForm] UpdateSupplierDto supplierDto)
     {
         try
         {

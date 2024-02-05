@@ -56,7 +56,7 @@ public class SupplyOrderController : ControllerBase
     }
     
     [HttpPost]
-    public IActionResult CreateSupplyOrder([FromBody] CreateSupplyOrderDto createSupplyOrderDto)
+    public IActionResult CreateSupplyOrder([FromForm] CreateSupplyOrderDto createSupplyOrderDto)
     {
         try
         {
@@ -76,7 +76,7 @@ public class SupplyOrderController : ControllerBase
     }
     
     [HttpPut("{id}")]
-    public IActionResult UpdateSupplyOrder(Guid id, [FromBody] UpdateSupplyOrderDto updateSupplyOrderDto)
+    public IActionResult UpdateSupplyOrder(Guid id, [FromForm] UpdateSupplyOrderDto updateSupplyOrderDto)
     {
         try
         {
