@@ -4,13 +4,15 @@ using invenio.Models.Dtos;
 using invenio.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 namespace invenio.Controllers;
 
 [ApiController]
-[Authorize]
+// [Authorize]
 [Route("/api/warehouses")]
-public class WarehouseController : ControllerBase
+public class WarehouseController : ODataController
 {
     private readonly IRepositoryWrapper _repository;
     private readonly IMapper _mapper;
@@ -22,6 +24,7 @@ public class WarehouseController : ControllerBase
     }
 
     [HttpGet]
+    [EnableQuery]
     public ActionResult<IEnumerable<WarehouseDto>> GetAll()
     {
         try

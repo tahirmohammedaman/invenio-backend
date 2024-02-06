@@ -4,7 +4,7 @@ namespace invenio.Models.Dtos;
 
 public record WarehouseDto
 {
-    public Guid WarehouseId { get; set; }
+    [Key] public Guid WarehouseId { get; set; }
     public string Name { get; set; }
     public string Country { get; set; }
     public string City { get; set; }

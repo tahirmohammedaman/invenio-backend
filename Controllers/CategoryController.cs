@@ -3,13 +3,15 @@ using invenio.Models.Dtos.Category;
 using invenio.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 namespace invenio.Controllers;
 
 [ApiController]
-[Authorize]
+// [Authorize]
 [Route("/api/categories")]
-public class CategoryController : ControllerBase
+public class CategoryController : ODataController
 {
     private readonly IRepositoryWrapper _repository;
     private readonly IMapper _mapper;
@@ -21,6 +23,7 @@ public class CategoryController : ControllerBase
     }
     
     [HttpGet]
+    [EnableQuery]
     public ActionResult<IEnumerable<CategoryDto>> GetAll()
     {
         try

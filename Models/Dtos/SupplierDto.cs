@@ -4,7 +4,7 @@ namespace invenio.Models.Dtos;
 
 public record SupplierDto
 {
-    public Guid SupplierId { get; set; }
+    [Key] public Guid SupplierId { get; set; }
     public string Name { get; set; }
     public string? LogoPath { get; set; }
     public string Country { get; set; }

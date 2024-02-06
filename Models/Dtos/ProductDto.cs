@@ -5,7 +5,7 @@ namespace invenio.Models.Dtos.Product;
 
 public record ProductDto
 {
-    public Guid ProductId { get; set; }
+    [Key] public Guid ProductId { get; set; }
     public string? Name { get; set; }
     public string? ShortDescription { get; set; }
     public string? Description { get; set; }

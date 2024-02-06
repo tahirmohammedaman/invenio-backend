@@ -4,7 +4,7 @@ namespace invenio.Models.Dtos;
 
 public record SupplyDto
 {
-    public Guid SupplyId { get; set; }
+    [Key] public Guid SupplyId { get; set; }
     public Models.Product Product { get; set; }
     public Supplier Supplier { get; set; }
     public double Price { get; set; }

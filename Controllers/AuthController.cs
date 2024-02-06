@@ -57,6 +57,7 @@ public class AuthController : ControllerBase
                 audience: "invenio.com",
                 claims: new List<Claim> {
                     new(ClaimTypes.Name, user.FirstName + " " + user.LastName),
+                    new(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                     new(ClaimTypes.Role, user.Role),
                 },
                 expires: DateTime.Now.AddHours(12),

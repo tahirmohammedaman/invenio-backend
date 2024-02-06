@@ -1,8 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace invenio.Models.Dtos;
 
 public record SupplyOrderDto
 {
-    public Guid SupplyOrderId { get; set; }
+    [Key] public Guid SupplyOrderId { get; set; }
     public SupplyDto Supply { get; set; }
     public WarehouseDto Warehouse { get; set; }
     public int Quantity { get; set; }

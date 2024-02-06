@@ -1,16 +1,19 @@
 using AutoMapper;
+using invenio.Models;
 using invenio.Services;
 using invenio.Models.Dtos;
 using invenio.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 namespace invenio.Controllers;
 
 [ApiController]
-[Authorize]
+// [Authorize]
 [Route("/api/suppliers")]
-public class SupplierController : ControllerBase
+public class SupplierController : ODataController
 {
     private readonly IRepositoryWrapper _repository;
     private readonly IMapper _mapper;
@@ -22,6 +25,7 @@ public class SupplierController : ControllerBase
     }
     
     [HttpGet]
+    [EnableQuery]
     public ActionResult<IEnumerable<SupplierDto>> GetAll()
     {
         try

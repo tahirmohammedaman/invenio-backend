@@ -5,13 +5,15 @@ using invenio.Repositories;
 using invenio.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 namespace invenio.Controllers;
 
 [ApiController]
-[Authorize]
+// [Authorize]
 [Route("/api/products")]
-public class ProductController : ControllerBase
+public class ProductController : ODataController
 {
     private readonly IRepositoryWrapper _repository;
     private readonly IMapper _mapper;
@@ -23,6 +25,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet]
+    [EnableQuery]
     public ActionResult<IEnumerable<ProductDto>> GetAll()
     {
         try

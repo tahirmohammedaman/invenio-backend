@@ -3,13 +3,15 @@ using invenio.Models.Dtos;
 using invenio.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 namespace invenio.Controllers;
 
 [ApiController]
-[Authorize]
+// [Authorize]
 [Route("/api/stocks")]
-public class StockController : ControllerBase
+public class StockController : ODataController
 {
     private readonly IRepositoryWrapper _repository;
     private readonly IMapper _mapper;
@@ -21,6 +23,7 @@ public class StockController : ControllerBase
     }
 
     [HttpGet]
+    [EnableQuery]
     public ActionResult<IEnumerable<StockDto>> GetAll()
     {
         try
