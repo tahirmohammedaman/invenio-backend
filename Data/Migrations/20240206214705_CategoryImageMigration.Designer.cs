@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using invenio.Data;
@@ -11,9 +12,11 @@ using invenio.Data;
 namespace invenio.Data.Migrations
 {
     [DbContext(typeof(InvenioContext))]
-    partial class InvenioContextModelSnapshot : ModelSnapshot
+    [Migration("20240206214705_CategoryImageMigration")]
+    partial class CategoryImageMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

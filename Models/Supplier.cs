@@ -11,8 +11,8 @@ public class Supplier
     
     [Required]
     public string Name { get; set; }
-    
-    public string? LogoPath { get; set; }
+
+    public string? LogoPath { get; set; } = "default_supplier_logo.svg";
     
     [Required]
     public string Country { get; set; }

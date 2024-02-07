@@ -6,7 +6,7 @@ public record SupplierDto
 {
     [Key] public Guid SupplierId { get; set; }
     public string Name { get; set; }
-    public string? LogoPath { get; set; }
+    public string LogoPath { get; set; }
     public string Country { get; set; }
     public string City { get; set; }
     public string Email { get; set; }

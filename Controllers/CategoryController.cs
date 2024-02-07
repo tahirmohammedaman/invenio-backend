@@ -1,7 +1,7 @@
 using AutoMapper;
 using invenio.Models.Dtos.Category;
 using invenio.Repositories;
-using Microsoft.AspNetCore.Authorization;
+using invenio.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
@@ -61,11 +61,14 @@ public class CategoryController : ODataController
     }
     
     [HttpPost]
-    public ActionResult<CategoryDto> CreateCategory(CreateCategoryDto categoryDto)
+    public ActionResult<CategoryDto> CreateCategory([FromForm] CreateCategoryDto categoryDto)
     {
         try
         {
             var category = _mapper.Map<Models.Category>(categoryDto);
+            if (categoryDto.Image is not null)
+                category.ImagePath = FileService.UploadFile(categoryDto.Image);
+            
             _repository.Category.CreateCategory(category);
             _repository.Save();
             
@@ -87,6 +90,9 @@ public class CategoryController : ODataController
             var category = _repository.Category.GetCategoryById(id);
             if (category is null)
                 return NotFound();
+            
+            if (category.ImagePath is not null)
+                FileService.DeleteFile(category.ImagePath);
             
             _repository.Category.DeleteCategory(category);
             _repository.Save();
@@ -110,6 +116,13 @@ public class CategoryController : ODataController
                 return NotFound();
             
             _mapper.Map(updateCategoryDto, category);
+            if (updateCategoryDto.Image is not null)
+            {
+                if (category.ImagePath is not null)
+                    FileService.DeleteFile(category.ImagePath);
+                category.ImagePath = FileService.UploadFile(updateCategoryDto.Image);
+            }
+            
             _repository.Category.UpdateCategory(category);
             _repository.Save(); 
             
