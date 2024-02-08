@@ -41,5 +41,5 @@ public class Product
     
     public virtual ICollection<Supply> Supplies { get; set; }
     
-    public Stock? Stock { get; set; }
+    public ICollection<Stock> Stocks { get; set; }
 }
