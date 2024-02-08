@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.OData.Routing.Controllers;
 namespace invenio.Controllers;
 
 [ApiController]
-// [Authorize]
+[Authorize]
 [Route("/api/stocks")]
 public class StockController : ODataController
 {
@@ -41,6 +41,7 @@ public class StockController : ODataController
     }
 
     [HttpGet("{id}")]
+    [EnableQuery]
     public ActionResult<StockDto> GetStockById(Guid id)
     {
         try
@@ -61,6 +62,7 @@ public class StockController : ODataController
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public IActionResult CreateStock([FromForm] CreateStockDto createStockDto)
     {
         try
@@ -81,6 +83,7 @@ public class StockController : ODataController
     }
     
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult UpdateStock(Guid id, [FromForm] UpdateStockDto updateStockDto)
     {
         try
@@ -103,6 +106,7 @@ public class StockController : ODataController
     }
     
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult DeleteStock(Guid id)
     {
         try

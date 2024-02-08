@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.OData.Routing.Controllers;
 namespace invenio.Controllers;
 
 [ApiController]
-// [Authorize]
+[Authorize]
 [Route("/api/supplies")]
 public class SupplyController : ODataController
 {
@@ -42,6 +42,7 @@ public class SupplyController : ODataController
     }
     
     [HttpGet("{id}")]
+    [EnableQuery]
     public ActionResult<SupplyDto> GetSupplyById(Guid id)
     {
         try
@@ -62,6 +63,7 @@ public class SupplyController : ODataController
     }
     
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public IActionResult CreateSupply([FromForm] CreateSupplyDto createSupplyDto)
     {
         try
@@ -81,6 +83,7 @@ public class SupplyController : ODataController
     }
     
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult UpdateSupply(Guid id, [FromForm] UpdateSupplyDto updateSupplyDto)
     {
         try
@@ -104,6 +107,7 @@ public class SupplyController : ODataController
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult DeleteSupply(Guid id)
     {
         try

@@ -2,6 +2,7 @@ using AutoMapper;
 using invenio.Models.Dtos.Category;
 using invenio.Repositories;
 using invenio.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
@@ -9,7 +10,7 @@ using Microsoft.AspNetCore.OData.Routing.Controllers;
 namespace invenio.Controllers;
 
 [ApiController]
-// [Authorize]
+[Authorize]
 [Route("/api/categories")]
 public class CategoryController : ODataController
 {
@@ -41,6 +42,7 @@ public class CategoryController : ODataController
     }
     
     [HttpGet("{id}")]
+    [EnableQuery]
     public ActionResult<CategoryDto> GetCategoryById(Guid id)
     {
         try
@@ -61,6 +63,7 @@ public class CategoryController : ODataController
     }
     
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public ActionResult<CategoryDto> CreateCategory([FromForm] CreateCategoryDto categoryDto)
     {
         try
@@ -83,6 +86,7 @@ public class CategoryController : ODataController
     }
     
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public ActionResult DeleteCategory(Guid id)
     {
         try
@@ -107,6 +111,7 @@ public class CategoryController : ODataController
     }
     
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public ActionResult UpdateCategory(Guid id, [FromForm] UpdateCategoryDto updateCategoryDto)
     {
         try

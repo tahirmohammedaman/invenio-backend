@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.OData.Routing.Controllers;
 namespace invenio.Controllers;
 
 [ApiController]
-// [Authorize]
+[Authorize]
 [Route("/api/products")]
 public class ProductController : ODataController
 {
@@ -44,6 +44,7 @@ public class ProductController : ODataController
     }
 
     [HttpGet("{id}")]
+    [EnableQuery]
     public ActionResult<ProductDto> GetProductById(Guid id)
     {
         try
@@ -64,6 +65,7 @@ public class ProductController : ODataController
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public IActionResult CreateProduct([FromForm] CreateProductDto createProductDto)
     {
         try
@@ -94,6 +96,7 @@ public class ProductController : ODataController
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult UpdateProduct(Guid id, [FromForm] UpdateProductDto updateProductDto)
     {
         try
@@ -127,6 +130,7 @@ public class ProductController : ODataController
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult DeleteProduct(Guid id)
     {
         try

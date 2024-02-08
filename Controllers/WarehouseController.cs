@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.OData.Routing.Controllers;
 namespace invenio.Controllers;
 
 [ApiController]
-// [Authorize]
+[Authorize]
 [Route("/api/warehouses")]
 public class WarehouseController : ODataController
 {
@@ -42,6 +42,7 @@ public class WarehouseController : ODataController
     }
 
     [HttpGet("{id}")]
+    [EnableQuery]
     public ActionResult<WarehouseDto> GetWarehouseById(Guid id)
     {
         try
@@ -62,6 +63,7 @@ public class WarehouseController : ODataController
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public IActionResult CreateWarehouse([FromForm] CreateWarehouseDto createWarehouseDto)
     {
         try
@@ -82,6 +84,7 @@ public class WarehouseController : ODataController
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult UpdateWarehouse(Guid id, [FromForm] UpdateWarehouseDto updateWarehouseDto)
     {
         try
@@ -104,6 +107,7 @@ public class WarehouseController : ODataController
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult DeleteWarehouse(Guid id)
     {
         try
