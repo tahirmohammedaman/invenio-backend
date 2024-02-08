@@ -1,3 +1,4 @@
+using System.Reflection;
 using AutoMapper;
 using invenio.Models;
 using invenio.Models.Dtos.Product;
@@ -71,12 +72,12 @@ public class ProductController : ODataController
 
             var createImages = new[]
                 { createProductDto.Image1, createProductDto.Image2, createProductDto.Image3, createProductDto.Image4 };
-            var productImages = new[]
-                { product.Image1Path, product.Image2Path, product.Image3Path, product.Image4Path };
 
-            for (int i = 0; i < createImages.Length; i++)
-                if (createImages[i] is not null)
-                    productImages[i] = FileService.UploadFile(createImages[i]);
+            for (int i = 0; i < createImages.Length && createImages[i] is not null; i++)
+            {
+                PropertyInfo prop = product.GetType().GetProperty($"Image{i + 1}Path");
+                prop.SetValue(product, FileService.UploadFile(createImages[i]));
+            }
 
             _repository.Product.CreateProduct(product);
             _repository.Save();
@@ -105,22 +106,13 @@ public class ProductController : ODataController
 
             var updateImages = new[]
                 { updateProductDto.Image1, updateProductDto.Image2, updateProductDto.Image3, updateProductDto.Image4 };
-            var productImages = new[]
-                { product.Image1Path, product.Image2Path, product.Image3Path, product.Image4Path };
 
-            for (int i = 0; i < updateImages.Length; i++)
+
+            for (int i = 0; i < updateImages.Length && updateImages[i] is not null; i++)
             {
-                if (updateImages[i] is not null)
-                {
-                    if (productImages[i] is not null)
-                        FileService.DeleteFile(productImages[i]);
-                    productImages[i] = FileService.UploadFile(updateImages[i]);
-                }
+                PropertyInfo prop = product.GetType().GetProperty($"Image{i + 1}Path");
+                prop.SetValue(product, FileService.UploadFile(updateImages[i]));
             }
-
-            (product.Image1Path, product.Image2Path, product.Image3Path, product.Image4Path) = (productImages[0],
-                productImages[1], productImages[2], productImages[3]);
-
 
             _repository.Product.UpdateProduct(product);
             _repository.Save();

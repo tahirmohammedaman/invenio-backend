@@ -24,14 +24,14 @@ public record ProductDto
 public record CreateProductDto
 {
     [Required] public string Name { get; set; }
-    [Required] public string Description { get; set; }
+    public string? Description { get; set; }
     [Required] public string ShortDescription { get; set; }
     [Required] public IFormFile Image1 { get; set; }
     public IFormFile? Image2 { get; set; }
     public IFormFile? Image3 { get; set; }
     public IFormFile? Image4 { get; set; }
     [Required] public double Price { get; set; }
-    public int? MinimumOrderQuantity { get; set; }
+    public int? MinimumOrderQuantity { get; set; } = 1;
     public int? MaximumOrderQuantity { get; set; }
     [Required] public Guid CategoryId { get; set; }
 }

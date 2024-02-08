@@ -12,6 +12,7 @@ public class ProductRepository: RepositoryBase<Models.Product>, IProductReposito
     public IEnumerable<Models.Product> GetAllProducts() =>
         FindAll()
             .OrderBy(product => product.Name)
+            .Include(product => product.Category)
             .ToList();
     
     public Models.Product? GetProductById(Guid id) =>

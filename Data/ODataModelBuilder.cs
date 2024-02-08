@@ -1,3 +1,4 @@
+using invenio.Models;
 using invenio.Models.Dtos;
 using invenio.Models.Dtos.Category;
 using invenio.Models.Dtos.Product;
