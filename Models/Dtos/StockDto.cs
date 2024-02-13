@@ -20,7 +20,7 @@ public record CreateStockDto
     public Guid WarehouseId { get; set; }
     public int StockQuantity { get; set; }
     public int LowStockThreshold { get; set; }
-    public int QuantityPerUnit { get; set; }
+    public int? QuantityPerUnit { get; set; }
 }
 
 public record UpdateStockDto
