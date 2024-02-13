@@ -11,6 +11,7 @@ public record SupplyDto
     public int? SupplyLeadTime { get; set; }
     public int MinimumOrderQuantity { get; set; } = 1;
     public int? MaximumOrderQuantity { get; set; }
+    public bool IsDefaultSupply { get; set; } = false;
 }
 
 public record CreateSupplyDto
@@ -21,6 +22,7 @@ public record CreateSupplyDto
     public int? SupplyLeadTime { get; set; }
     public int? MinimumOrderQuantity { get; set; }
     public int? MaximumOrderQuantity { get; set; }
+    public bool? IsDefaultSupply { get; set; }
 }
 
 public record UpdateSupplyDto
@@ -31,5 +33,6 @@ public record UpdateSupplyDto
     public int? SupplyLeadTime { get; set; }
     public int? MinimumOrderQuantity { get; set; }
     public int? MaximumOrderQuantity { get; set; }
+    public bool? IsDefaultSupply { get; set; }
 }
 

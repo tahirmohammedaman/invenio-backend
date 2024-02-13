@@ -29,6 +29,8 @@ public class Supply
     public int MinimumOrderQuantity { get; set; } = 1;
     
     public int? MaximumOrderQuantity { get; set; }
+
+    public bool? IsDefaultSupply { get; set; } = false;
     
     public virtual ICollection<SupplyOrder>? SupplyOrders { get; set; }
 }
