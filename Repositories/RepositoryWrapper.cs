@@ -7,6 +7,7 @@ using invenio.Repositories.Supply;
 using invenio.Repositories.SupplyOrder;
 using invenio.Repositories.User;
 using invenio.Repositories.Warehouse;
+using invenio.Repositories.SaleOrder;
 
 namespace invenio.Repositories;
 
@@ -22,6 +23,7 @@ public class RepositoryWrapper : IRepositoryWrapper
     private IWarehouseRepository _warehouse;
     private ISupplyOrderRepository _supplyOrder;
     private IUserRepository _user;
+    private ISaleOrderRepository _saleOrder;
     
     public RepositoryWrapper(InvenioContext context)
     {
@@ -116,6 +118,16 @@ public class RepositoryWrapper : IRepositoryWrapper
         }
     }
     
+    public ISaleOrderRepository SaleOrder
+    {
+        get
+        {
+            if (_saleOrder is null)
+                _saleOrder = new SaleOrderRepository(_context);
+            
+            return _saleOrder;
+        }
+    }
     public void Save()
     {
         _context.SaveChanges();
