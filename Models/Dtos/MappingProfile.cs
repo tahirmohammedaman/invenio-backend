@@ -53,5 +53,17 @@ public class MappingProfile : Profile
         
         // User
         CreateMap<RegisterDto, Models.User>();
+
+        // Customer
+        CreateMap<CustomerDto,      Models.Customer>();
+        CreateMap<UpdateCustomerDto, Models.Customer>()
+            .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+        CreateMap<CreateCustomerDto, Models.Customer>();
+
+        // SaleOrder
+        CreateMap<Models.SaleOrder, SaleOrderDto>();
+        CreateMap<Models.SaleOrder, UpdateSaleOrderDto>()
+            .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+        CreateMap<Models.SaleOrder, CreateSaleOrderDto>();
     }
 }
