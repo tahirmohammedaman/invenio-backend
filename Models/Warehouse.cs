@@ -33,4 +33,6 @@ public class Warehouse
     public virtual ICollection<Stock>? Stocks { get; set; }
     
     public virtual ICollection<SupplyOrder>? SupplyOrders { get; set; }
+    
+    public virtual ICollection<SaleOrder>? SaleOrders { get; set; }
 }

@@ -39,7 +39,9 @@ public class Product
     
     public int? MaximumOrderQuantity { get; set; }
     
-    public virtual ICollection<Supply> Supplies { get; set; }
+    public virtual ICollection<Supply>? Supplies { get; set; }
     
-    public ICollection<Stock> Stocks { get; set; }
+    public virtual ICollection<Stock>? Stocks { get; set; }
+    
+    public virtual ICollection<SaleOrder>? SaleOrders { get; set; }
 }

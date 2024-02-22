@@ -30,4 +30,6 @@ public class Customer
     public string PrimaryPhoneNumber { get; set; }
     
     public string? SecondaryPhoneNumber { get; set; }
+    
+    public virtual ICollection<SaleOrder>? SaleOrders { get; set; }
 }

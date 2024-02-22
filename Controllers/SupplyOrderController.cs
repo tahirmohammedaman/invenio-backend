@@ -68,8 +68,18 @@ public class SupplyOrderController : ODataController
         try
         {
             var supplyOrder = _mapper.Map<Models.SupplyOrder>(createSupplyOrderDto);
-            
-            // TODO: if (createSupplyOrderDto.OrderDate is null)
+
+            if (createSupplyOrderDto.OrderDate is null)
+                supplyOrder.OrderDate = DateTime.Now.ToUniversalTime();
+
+            if (createSupplyOrderDto.DeliveryDate is null)
+            {
+                var supply = _repository.Supply.GetSupplyById(supplyOrder.SupplyId);
+                if (supply is not null && supply.SupplyLeadTime.HasValue && supply.SupplyLeadTime.Value > 0)
+                {
+                    supplyOrder.DeliveryDate = supplyOrder.OrderDate.AddDays(supply.SupplyLeadTime.Value).ToUniversalTime();
+                }
+            }
                 
             _repository.SupplyOrder.CreateSupplyOrder(supplyOrder);
             _repository.Save();
@@ -95,8 +105,6 @@ public class SupplyOrderController : ODataController
             if (supplyOrder is null)
                 return NotFound();
 
-            Console.WriteLine(supplyOrder.SupplyOrderId + " " + supplyOrder.SupplyId + " " + supplyOrder.WarehouseId + " " + supplyOrder.Quantity + " " + supplyOrder.Price + " " + supplyOrder.OrderDate + " " + supplyOrder.DeliveryDate + " " + supplyOrder.IsDelivered);
-            Console.WriteLine(updateSupplyOrderDto.SupplyId + " " + updateSupplyOrderDto.WarehouseId + " " + updateSupplyOrderDto.Quantity + " " + updateSupplyOrderDto.Price + " " + updateSupplyOrderDto.OrderDate + " " + updateSupplyOrderDto.DeliveryDate + " " + updateSupplyOrderDto.IsDelivered);
             _mapper.Map(updateSupplyOrderDto, supplyOrder);
             _repository.SupplyOrder.UpdateSupplyOrder(supplyOrder);
             _repository.Save();

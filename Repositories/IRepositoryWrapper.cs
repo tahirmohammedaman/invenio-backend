@@ -1,6 +1,7 @@
 using invenio.Repositories.Category;
 using invenio.Repositories.Customer;
 using invenio.Repositories.Product;
+using invenio.Repositories.SaleOrder;
 using invenio.Repositories.Stock;
 using invenio.Repositories.Supplier;
 using invenio.Repositories.Supply;
@@ -29,6 +30,8 @@ public interface IRepositoryWrapper
     IUserRepository User { get; }
     
     ICustomerRepository Customer { get; }
+    
+    ISaleOrderRepository SaleOrder { get; }
     
     void Save();
 }

@@ -23,8 +23,8 @@ public class Supply
     
     [Required]
     public double Price { get; set; }
-    
-    public int? SupplyLeadTime { get; set; }
+
+    public int? SupplyLeadTime { get; set; } = 5;
     
     public int MinimumOrderQuantity { get; set; } = 1;
     
