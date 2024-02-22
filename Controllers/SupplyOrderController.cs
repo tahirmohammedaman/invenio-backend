@@ -10,7 +10,7 @@ namespace invenio.Controllers;
 
 [ApiController]
 [Authorize]
-[Route("/api/supply-orders")]
+[Route("/api/supplyorders")]
 public class SupplyOrderController : ODataController
 {
     private readonly IRepositoryWrapper _repository;
@@ -68,6 +68,9 @@ public class SupplyOrderController : ODataController
         try
         {
             var supplyOrder = _mapper.Map<Models.SupplyOrder>(createSupplyOrderDto);
+            
+            // TODO: if (createSupplyOrderDto.OrderDate is null)
+                
             _repository.SupplyOrder.CreateSupplyOrder(supplyOrder);
             _repository.Save();
             

@@ -10,7 +10,7 @@ public record SupplyOrderDto
     public int Quantity { get; set; }
     public double Price { get; set; }
     public DateTime OrderDate { get; set; }
-    public DateTime? DeliveryDate { get; set; }
+    public DateTime DeliveryDate { get; set; }
     public bool IsDelivered { get; set; }
 }
 
@@ -20,9 +20,9 @@ public record CreateSupplyOrderDto
     public Guid WarehouseId { get; set; }
     public int Quantity { get; set; }
     public double Price { get; set; }
-    public DateTime OrderDate { get; set; }
+    public DateTime? OrderDate { get; set; }
     public DateTime? DeliveryDate { get; set; }
-    public bool IsDelivered { get; set; }
+    public bool? IsDelivered { get; set; }
 }
 
 public record UpdateSupplyOrderDto

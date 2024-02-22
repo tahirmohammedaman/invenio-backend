@@ -13,6 +13,7 @@ public class SupplyRepository : RepositoryBase<Models.Supply>, ISupplyRepository
         FindAll()
             .OrderBy(supply => supply.Supplier.Name)
             .Include(supply => supply.Supplier)
+            .Include(supply => supply.Product)
             .ToList();
     
     public Models.Supply? GetSupplyById(Guid id) =>

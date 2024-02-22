@@ -30,7 +30,8 @@ public class SupplyOrder
     [Required]
     public DateTime OrderDate { get; set; }
     
-    public DateTime? DeliveryDate { get; set; }
+    [Required]
+    public DateTime DeliveryDate { get; set; }
     
     public bool IsDelivered { get; set; } = false;
 }

@@ -17,13 +17,13 @@ public class SupplierController : ODataController
 {
     private readonly IRepositoryWrapper _repository;
     private readonly IMapper _mapper;
-    
+
     public SupplierController(IRepositoryWrapper repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;
     }
-    
+
     [HttpGet]
     [EnableQuery]
     public ActionResult<IEnumerable<SupplierDto>> GetAll()
@@ -32,7 +32,7 @@ public class SupplierController : ODataController
         {
             var suppliers = _repository.Supplier.GetAllSuppliers();
             var suppliersResponse = _mapper.Map<IEnumerable<SupplierDto>>(suppliers);
-            
+
             return Ok(suppliersResponse);
         }
         catch (Exception e)
@@ -41,7 +41,7 @@ public class SupplierController : ODataController
             return StatusCode(500, "Internal server error");
         }
     }
-    
+
     [HttpGet("{id}")]
     [EnableQuery]
     public ActionResult<SupplierDto> GetSupplierById(Guid id)
@@ -62,7 +62,7 @@ public class SupplierController : ODataController
             return StatusCode(500, "Internal server error");
         }
     }
-    
+
     [HttpPost]
     [Authorize(Roles = "Admin")]
     public IActionResult CreateSupplier([FromForm] CreateSupplierDto createSupplierDto)
@@ -72,13 +72,13 @@ public class SupplierController : ODataController
             var supplier = _mapper.Map<Models.Supplier>(createSupplierDto);
             if (createSupplierDto.Logo is not null)
                 supplier.LogoPath = FileService.UploadFile(createSupplierDto.Logo);
-            
+
             _repository.Supplier.CreateSupplier(supplier);
             _repository.Save();
 
             var supplierDto = _mapper.Map<SupplierDto>(supplier);
-            
-            return CreatedAtAction(nameof(GetSupplierById), new {id = supplier.SupplierId}, supplierDto);
+
+            return CreatedAtAction(nameof(GetSupplierById), new { id = supplier.SupplierId }, supplierDto);
         }
         catch (Exception e)
         {
@@ -86,7 +86,7 @@ public class SupplierController : ODataController
             return StatusCode(500, "Internal server error");
         }
     }
-    
+
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
     public IActionResult UpdateSupplier(Guid id, [FromForm] UpdateSupplierDto updateSupplierDto)
@@ -117,7 +117,7 @@ public class SupplierController : ODataController
             return StatusCode(500, "Internal server error");
         }
     }
-    
+
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
     public IActionResult DeleteSupplier(Guid id)
@@ -127,13 +127,13 @@ public class SupplierController : ODataController
             var supplier = _repository.Supplier.GetSupplierById(id);
             if (supplier is null)
                 return NotFound();
-            
+
             if (supplier.LogoPath is not null)
                 FileService.DeleteFile(supplier.LogoPath);
-            
+
             _repository.Supplier.DeleteSupplier(supplier);
             _repository.Save();
-            
+
             return NoContent();
         }
         catch (Exception e)
@@ -142,5 +142,5 @@ public class SupplierController : ODataController
             return StatusCode(500, "Internal server error");
         }
     }
-    
+
 }

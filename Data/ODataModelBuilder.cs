@@ -1,4 +1,3 @@
-using invenio.Models;
 using invenio.Models.Dtos;
 using invenio.Models.Dtos.Category;
 using invenio.Models.Dtos.Product;
@@ -20,6 +19,7 @@ public static class ODataModelBuilder
         builder.EntitySet<StockDto>("Stocks");
         builder.EntitySet<WarehouseDto>("Warehouses");
         builder.EntitySet<SupplyOrderDto>("SupplyOrders");
+        builder.EntitySet<CustomerDto>("Customers");
 
         return builder.GetEdmModel();
     }

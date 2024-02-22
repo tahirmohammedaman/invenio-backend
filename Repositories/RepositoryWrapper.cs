@@ -1,5 +1,6 @@
 using invenio.Data;
 using invenio.Repositories.Category;
+using invenio.Repositories.Customer;
 using invenio.Repositories.Product;
 using invenio.Repositories.Stock;
 using invenio.Repositories.Supplier;
@@ -22,6 +23,7 @@ public class RepositoryWrapper : IRepositoryWrapper
     private IWarehouseRepository _warehouse;
     private ISupplyOrderRepository _supplyOrder;
     private IUserRepository _user;
+    private ICustomerRepository _customer;
     
     public RepositoryWrapper(InvenioContext context)
     {
@@ -113,6 +115,17 @@ public class RepositoryWrapper : IRepositoryWrapper
                 _user = new UserRepository(_context);
             
             return _user;
+        }
+    }
+    
+    public ICustomerRepository Customer
+    {
+        get
+        {
+            if (_customer is null)
+                _customer = new CustomerRepository(_context);
+            
+            return _customer;
         }
     }
     
