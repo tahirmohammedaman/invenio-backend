@@ -140,5 +140,51 @@ public class SupplyOrderController : ODataController
             return StatusCode(500, "Internal server error");
         }
     }
+    
+    [HttpPost]
+    [Route("{id}/delivery")]
+    [Authorize(Roles = "Admin")]
+    public IActionResult MarkSupplyOrderAsDeliveredAndUpdateStock (Guid id)
+    {
+        try
+        {
+            var supplyOrder = _repository.SupplyOrder.GetSupplyOrderById(id);
+            if (supplyOrder is null)
+                return NotFound();
+
+            supplyOrder.DeliveryDate = DateTime.Now.ToUniversalTime();
+            supplyOrder.IsDelivered = true;
+            _repository.SupplyOrder.UpdateSupplyOrder(supplyOrder);
+            
+            // Update stock
+            var stock = _repository.Stock.GetStockByProductIdAndWarehouseId(supplyOrder.Supply.ProductId, supplyOrder.WarehouseId);
+            if (stock is not null)
+            {
+                stock.StockQuantity += supplyOrder.Quantity;
+                _repository.Stock.UpdateStock(stock);
+            }
+
+            else
+            {
+                stock = new Models.Stock
+                {
+                    ProductId = supplyOrder.Supply.ProductId,
+                    WarehouseId = supplyOrder.WarehouseId,
+                    StockQuantity = supplyOrder.Quantity,
+                    LowStockThreshold = 0,
+                };
+                _repository.Stock.CreateStock(stock);
+            }
+            
+            _repository.Save();
+
+            return NoContent();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, "Internal server error");
+        }
+    }
 
 }
