@@ -12,7 +12,12 @@ public class SupplierRepository: RepositoryBase<Models.Supplier>, ISupplierRepos
     public IEnumerable<Models.Supplier> GetAllSuppliers() =>
         FindAll()
             .OrderBy(supplier => supplier.Name)
+            .Include(supplier => supplier.Supplies)
+            .ThenInclude(supply => supply.Product)
+            .Include(supplier => supplier.Supplies)
+            .ThenInclude(supply => supply.SupplyOrders) // Include SupplyOrders relation within Supplies
             .ToList();
+
     
     public Models.Supplier? GetSupplierById(Guid id) =>
         FindByCondition(supplier => supplier.SupplierId.Equals(id))

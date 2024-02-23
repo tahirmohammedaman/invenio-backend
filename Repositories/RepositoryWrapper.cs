@@ -1,6 +1,7 @@
 using invenio.Data;
 using invenio.Repositories.Category;
 using invenio.Repositories.Customer;
+using invenio.Repositories.Dashboard;
 using invenio.Repositories.Product;
 using invenio.Repositories.SaleOrder;
 using invenio.Repositories.Stock;

@@ -7,4 +7,6 @@ public interface IStockRepository : IRepositoryBase<Models.Stock>
     void CreateStock(Models.Stock stock);
     void UpdateStock(Models.Stock stock);
     void DeleteStock(Models.Stock stock);
+    
+    Models.Stock? GetStockByProductIdAndWarehouseId(Guid productId, Guid warehouseId);
 }

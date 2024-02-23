@@ -28,4 +28,10 @@ public class StockRepository : RepositoryBase<Models.Stock>, IStockRepository
     public void UpdateStock(Models.Stock stock) => Context.Entry(stock).State = EntityState.Modified;
     
     public void DeleteStock(Models.Stock stock) => Delete(stock);
+    
+    public Models.Stock? GetStockByProductIdAndWarehouseId(Guid productId, Guid warehouseId) =>
+        FindByCondition(stock => stock.ProductId.Equals(productId) && stock.WarehouseId.Equals(warehouseId))
+            .Include(stock => stock.Product)
+            .ThenInclude(product => product.Category)
+            .FirstOrDefault();
 }

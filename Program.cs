@@ -1,13 +1,13 @@
 using System.Text;
 using System.Text.Json.Serialization;
 using invenio.Data;
-using invenio.Models;
-using invenio.Models.Dtos;
 using invenio.Repositories;
+using invenio.Repositories.Dashboard;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using ODataModelBuilder = invenio.Data.ODataModelBuilder;
 
@@ -18,11 +18,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles)
+    .AddJsonOptions(options =>
+        options.JsonSerializerOptions.PropertyNamingPolicy = null)
     .AddOData(options => 
         options.EnableQueryFeatures().SetMaxTop(null)
             .AddRouteComponents(routePrefix: "api", model: ODataModelBuilder.GetEdmModel())
         );
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -30,6 +32,8 @@ builder.Services.AddDbContext<InvenioContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
+
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddCors(opt =>

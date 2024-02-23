@@ -12,7 +12,10 @@ public class CustomerRepository : RepositoryBase<Models.Customer>, ICustomerRepo
     public IEnumerable<Models.Customer> GetAllCustomers() =>
         FindAll()
             .OrderBy(customer => customer.Name)
+            .Include(customer => customer.SaleOrders) // Include SaleOrders relation
+            .ThenInclude(saleOrder => saleOrder.Product) // Include Product relation within SaleOrders
             .ToList();
+
 
     public Models.Customer? GetCustomerById(Guid id) =>
         FindByCondition(customer => customer.CustomerId.Equals(id))
