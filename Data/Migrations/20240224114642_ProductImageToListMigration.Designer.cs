@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using invenio.Data;
@@ -12,9 +13,11 @@ using invenio.Data;
 namespace invenio.Data.Migrations
 {
     [DbContext(typeof(InvenioContext))]
-    partial class InvenioContextModelSnapshot : ModelSnapshot
+    [Migration("20240224114642_ProductImageToListMigration")]
+    partial class ProductImageToListMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -103,7 +106,7 @@ namespace invenio.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<List<string>>("ImagePaths")
+                    b.Property<List<string>>("Images")
                         .IsRequired()
                         .HasColumnType("text[]");
 

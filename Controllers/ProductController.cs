@@ -42,7 +42,7 @@ public class ProductController : ODataController
             return StatusCode(500, "Internal server error");
         }
     }
-
+    
     [HttpGet("{id}")]
     [EnableQuery]
     public ActionResult<ProductDto> GetProductById(Guid id)
@@ -71,15 +71,11 @@ public class ProductController : ODataController
         try
         {
             var product = _mapper.Map<Product>(createProductDto);
-
-            var createImages = new[]
-                { createProductDto.Image1, createProductDto.Image2, createProductDto.Image3, createProductDto.Image4 };
-
-            for (int i = 0; i < createImages.Length && createImages[i] is not null; i++)
+            
+            createProductDto.Images.ForEach(image =>
             {
-                PropertyInfo prop = product.GetType().GetProperty($"Image{i + 1}Path");
-                prop.SetValue(product, FileService.UploadFile(createImages[i]));
-            }
+                product.ImagePaths.Add(FileService.UploadFile(image));
+            });
 
             _repository.Product.CreateProduct(product);
             _repository.Save();
@@ -107,14 +103,13 @@ public class ProductController : ODataController
 
             _mapper.Map(updateProductDto, product);
 
-            var updateImages = new[]
-                { updateProductDto.Image1, updateProductDto.Image2, updateProductDto.Image3, updateProductDto.Image4 };
-
-
-            for (int i = 0; i < updateImages.Length && updateImages[i] is not null; i++)
+            if (updateProductDto.Images is not null)
             {
-                PropertyInfo prop = product.GetType().GetProperty($"Image{i + 1}Path");
-                prop.SetValue(product, FileService.UploadFile(updateImages[i]));
+                product.ImagePaths.ForEach(image => FileService.DeleteFile(image));
+                product.ImagePaths.Clear();
+                updateProductDto.Images.ForEach(image => 
+                    product.ImagePaths.Add(FileService.UploadFile(image))
+                    );
             }
 
             _repository.Product.UpdateProduct(product);
@@ -139,6 +134,7 @@ public class ProductController : ODataController
             if (product is null)
                 return NotFound();
 
+            product.ImagePaths.ForEach(image => FileService.DeleteFile(image));
             _repository.Product.DeleteProduct(product);
             _repository.Save();
 

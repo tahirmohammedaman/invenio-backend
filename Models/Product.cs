@@ -14,17 +14,11 @@ public class Product
     
     [Required]
     public string ShortDescription { get; set; }
-    
+
     public string? Description { get; set; }
     
     [Required]
-    public string Image1Path { get; set; }
-    
-    public string? Image2Path { get; set; }
-    
-    public string? Image3Path { get; set; }
-    
-    public string? Image4Path { get; set; }
+    public List<string> ImagePaths { get; set; } = [];
     
     [Required]
     [ForeignKey("Category")]
