@@ -1,10 +1,12 @@
 using AutoMapper;
 using invenio.Models.Dtos;
 using invenio.Repositories;
+using invenio.Services.Mail;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
+using MimeKit;
 
 namespace invenio.Controllers;
 
@@ -15,11 +17,13 @@ public class SupplyOrderController : ODataController
 {
     private readonly IRepositoryWrapper _repository;
     private readonly IMapper _mapper;
+    private readonly IMailSender _mailSender;
     
-    public SupplyOrderController(IRepositoryWrapper repository, IMapper mapper)
+    public SupplyOrderController(IRepositoryWrapper repository, IMapper mapper, IMailSender mailSender)
     {
         _repository = repository;
         _mapper = mapper;
+        _mailSender = mailSender;
     }
     
     [HttpGet]
@@ -84,8 +88,16 @@ public class SupplyOrderController : ODataController
             _repository.SupplyOrder.CreateSupplyOrder(supplyOrder);
             _repository.Save();
             
-            var supplyOrderDto = _mapper.Map<SupplyOrderDto>(supplyOrder);
+            // Send mail
+            var mail = new Mail(
+                new [] {"tahiroam99@gmail.com"},
+                "New Supply Order",
+                "A new supply order has been created"
+                );
+            // AWAIT
+            _mailSender.SendMail(mail);
             
+            var supplyOrderDto = _mapper.Map<SupplyOrderDto>(supplyOrder);
             return CreatedAtAction(nameof(GetSupplyOrderById), new { id = supplyOrder.SupplyOrderId }, supplyOrderDto);
         }
         catch (Exception e)
@@ -175,9 +187,17 @@ public class SupplyOrderController : ODataController
                 };
                 _repository.Stock.CreateStock(stock);
             }
-            
             _repository.Save();
 
+            // Send mail
+            var mail = new Mail(
+                new [] {"tahiroam99@gmail.com"},
+                "Supply order delivery",
+                "Supply order has been delivered"
+            );
+            // AWAIT
+            _mailSender.SendMail(mail);
+            
             return NoContent();
         }
         catch (Exception e)
