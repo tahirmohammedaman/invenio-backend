@@ -4,5 +4,5 @@ namespace invenio.Repositories.Dashboard;
 
 public interface IDashboardRepository
 {
-    DashboardDto GetDashboardData();
+    Task<DashboardDto> GetDashboardData();
 }

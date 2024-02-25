@@ -27,11 +27,11 @@ public class ProductController : ODataController
 
     [HttpGet]
     [EnableQuery]
-    public ActionResult<IEnumerable<ProductDto>> GetAll()
+    public async Task<ActionResult<IEnumerable<ProductDto>>> GetAll()
     {
         try
         {
-            var products = _repository.Product.GetAllProducts();
+            var products = await _repository.Product.GetAllProducts();
             var productsResponse = _mapper.Map<IEnumerable<ProductDto>>(products);
 
             return Ok(productsResponse);
@@ -45,11 +45,11 @@ public class ProductController : ODataController
     
     [HttpGet("{id}")]
     [EnableQuery]
-    public ActionResult<ProductDto> GetProductById(Guid id)
+    public async Task<ActionResult<ProductDto>> GetProductById(Guid id)
     {
         try
         {
-            var product = _repository.Product.GetProductById(id);
+            var product = await _repository.Product.GetProductById(id);
 
             if (product is null)
                 return NotFound();
@@ -66,7 +66,7 @@ public class ProductController : ODataController
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    public IActionResult CreateProduct([FromForm] CreateProductDto createProductDto)
+    public async Task<IActionResult> CreateProduct([FromForm] CreateProductDto createProductDto)
     {
         try
         {
@@ -78,7 +78,7 @@ public class ProductController : ODataController
             });
 
             _repository.Product.CreateProduct(product);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             var productDto = _mapper.Map<ProductDto>(product);
 
@@ -93,11 +93,11 @@ public class ProductController : ODataController
 
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
-    public IActionResult UpdateProduct(Guid id, [FromForm] UpdateProductDto updateProductDto)
+    public async Task<IActionResult> UpdateProduct(Guid id, [FromForm] UpdateProductDto updateProductDto)
     {
         try
         {
-            var product = _repository.Product.GetProductById(id);
+            var product = await _repository.Product.GetProductById(id);
             if (product is null)
                 return NotFound();
 
@@ -113,7 +113,7 @@ public class ProductController : ODataController
             }
 
             _repository.Product.UpdateProduct(product);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             return NoContent();
         }
@@ -126,17 +126,17 @@ public class ProductController : ODataController
 
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
-    public IActionResult DeleteProduct(Guid id)
+    public async Task<IActionResult> DeleteProduct(Guid id)
     {
         try
         {
-            var product = _repository.Product.GetProductById(id);
+            var product = await _repository.Product.GetProductById(id);
             if (product is null)
                 return NotFound();
 
             product.ImagePaths.ForEach(image => FileService.DeleteFile(image));
             _repository.Product.DeleteProduct(product);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             return NoContent();
         }

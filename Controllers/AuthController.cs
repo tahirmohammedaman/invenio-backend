@@ -25,10 +25,10 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    public IActionResult Register([FromForm] RegisterDto userDto)
+    public async Task<IActionResult> Register([FromForm] RegisterDto userDto)
     {
-        // if (_repository.User.GetByEmail(userDto.Email) is not null)
-        //     return BadRequest("User with this email already exists");
+        if ((await _repository.User.GetByEmail(userDto.Email)) is not null)
+            return BadRequest("User with this email already exists");
 
         var user = _mapper.Map<User>(userDto);
         var hash = AuthService.HashPassword(user.Password, out var salt);
@@ -36,16 +36,17 @@ public class AuthController : ControllerBase
         user.Password = hash;
         user.Salt = salt;
 
-        _repository.User.CreateUser(user);
-        _repository.Save();
+        await _repository.User.CreateUser(user);
+        await _repository.SaveAsync();
 
         return Ok();
     }
 
     [HttpPost("login")]
-    public IActionResult Login([FromForm] LoginDto loginDto)
+    public async Task<IActionResult> Login([FromForm] LoginDto loginDto)
     {
-        if (_repository.User.GetByEmail(loginDto.Email) is not { } user)
+        var user = await _repository.User.GetByEmail(loginDto.Email);
+        if (user is null)
             return BadRequest("User with this email does not exist");
 
         if (AuthService.VerifyPassword(loginDto.Password, user.Password, user.Salt))

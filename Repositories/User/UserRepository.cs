@@ -12,11 +12,11 @@ public class UserRepository : IUserRepository
         Context = context;
     }
     
-    public void CreateUser(Models.User user)
+    public async Task CreateUser(Models.User user)
     {
-        Context.Set<Models.User>().Add(user);
+        await Context.Set<Models.User>().AddAsync(user);
     }
 
-    public Models.User? GetByEmail(string email) =>
-        Context.Set<Models.User>().AsNoTracking().First(u => u.Email == email);
+    public async Task<Models.User?> GetByEmail(string email) =>
+        await Context.Set<Models.User>().AsNoTracking().FirstAsync(u => u.Email == email);
 }

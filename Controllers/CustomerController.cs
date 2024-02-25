@@ -26,11 +26,11 @@ public class CustomerController : ODataController
     
     [HttpGet]
     [EnableQuery]
-    public ActionResult<IEnumerable<CustomerDto>> GetAll()
+    public async Task<ActionResult<IEnumerable<CustomerDto>>> GetAll()
     {
         try
         {
-            var customers = _repository.Customer.GetAllCustomers();
+            var customers = await _repository.Customer.GetAllCustomers();
             var customersResponse = _mapper.Map<IEnumerable<CustomerDto>>(customers);
             
             return Ok(customersResponse);
@@ -44,11 +44,11 @@ public class CustomerController : ODataController
     
     [HttpGet("{id}")]
     [EnableQuery]
-    public ActionResult<CustomerDto> GetCustomerById(Guid id)
+    public async Task<ActionResult<CustomerDto>> GetCustomerById(Guid id)
     {
         try
         {
-            var customer = _repository.Customer.GetCustomerById(id);
+            var customer = await _repository.Customer.GetCustomerById(id);
 
             if (customer is null)
                 return NotFound();
@@ -65,7 +65,7 @@ public class CustomerController : ODataController
     
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    public ActionResult<CustomerDto> CreateCustomer([FromForm] CreateCustomerDto createCustomerDto)
+    public async Task<ActionResult<CustomerDto>> CreateCustomer([FromForm] CreateCustomerDto createCustomerDto)
     {
         try
         {
@@ -74,7 +74,7 @@ public class CustomerController : ODataController
                 customer.LogoPath = FileService.UploadFile(createCustomerDto.Logo);
             
             _repository.Customer.CreateCustomer(customer);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             var customerDto = _mapper.Map<CustomerDto>(customer);
             return CreatedAtRoute(nameof(GetCustomerById), new { id = customer.CustomerId }, customerDto);
@@ -88,11 +88,11 @@ public class CustomerController : ODataController
     
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
-    public ActionResult<CustomerDto> UpdateCustomer(Guid id, [FromForm] UpdateCustomerDto updateCustomerDto)
+    public async Task<ActionResult<CustomerDto>> UpdateCustomer(Guid id, [FromForm] UpdateCustomerDto updateCustomerDto)
     {
         try
         {
-            var customer = _repository.Customer.GetCustomerById(id);
+            var customer = await _repository.Customer.GetCustomerById(id);
             if (customer is null)
                 return NotFound();
             
@@ -105,7 +105,7 @@ public class CustomerController : ODataController
             }
             
             _repository.Customer.UpdateCustomer(customer);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             var updatedCustomer = _mapper.Map<CustomerDto>(customer);
             return Ok(updatedCustomer);
@@ -119,11 +119,11 @@ public class CustomerController : ODataController
     
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
-    public IActionResult DeleteCustomer(Guid id)
+    public async Task<IActionResult> DeleteCustomer(Guid id)
     {
         try
         {
-            var customer = _repository.Customer.GetCustomerById(id);
+            var customer = await _repository.Customer.GetCustomerById(id);
             if (customer is null)
                 return NotFound();
             
@@ -131,7 +131,7 @@ public class CustomerController : ODataController
                 FileService.DeleteFile(customer.LogoPath);
             
             _repository.Customer.DeleteCustomer(customer);
-            _repository.Save();
+            await _repository.SaveAsync();
             
             return NoContent();
         }

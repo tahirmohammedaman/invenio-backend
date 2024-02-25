@@ -24,11 +24,11 @@ public class SaleOrderController : ODataController
     
     [HttpGet]
     [EnableQuery]
-    public ActionResult<IEnumerable<SaleOrderDto>> GetAll()
+    public async Task<ActionResult<IEnumerable<SaleOrderDto>>> GetAll()
     {
         try
         {
-            var saleOrders = _repository.SaleOrder.GetAllSaleOrders();
+            var saleOrders = await _repository.SaleOrder.GetAllSaleOrders();
             var saleOrdersResponse = _mapper.Map<IEnumerable<SaleOrderDto>>(saleOrders);
             
             return Ok(saleOrdersResponse);
@@ -42,11 +42,11 @@ public class SaleOrderController : ODataController
     
     [HttpGet("{id}")]
     [EnableQuery]
-    public ActionResult<SaleOrderDto> GetSaleOrderById(Guid id)
+    public async Task<ActionResult<SaleOrderDto>> GetSaleOrderById(Guid id)
     {
         try
         {
-            var saleOrder = _repository.SaleOrder.GetSaleOrderById(id);
+            var saleOrder = await _repository.SaleOrder.GetSaleOrderById(id);
 
             if (saleOrder is null)
                 return NotFound();
@@ -62,7 +62,7 @@ public class SaleOrderController : ODataController
     }
     
     [HttpPost]
-    public ActionResult<SaleOrderDto> CreateSaleOrder([FromForm] CreateSaleOrderDto createSaleOrderDto)
+    public async Task<ActionResult<SaleOrderDto>> CreateSaleOrder([FromForm] CreateSaleOrderDto createSaleOrderDto)
     {
         try
         {
@@ -72,7 +72,7 @@ public class SaleOrderController : ODataController
                 saleOrder.OrderDate = DateTime.Now.ToUniversalTime();
             
             _repository.SaleOrder.CreateSaleOrder(saleOrder);
-            _repository.Save();
+            await _repository.SaveAsync();
             
             var saleOrderResponse = _mapper.Map<SaleOrderDto>(saleOrder);
             return Ok(saleOrderResponse);
@@ -85,18 +85,18 @@ public class SaleOrderController : ODataController
     }
     
     [HttpPut("{id}")]
-    public ActionResult<SaleOrderDto> UpdateSaleOrder(Guid id, [FromForm] UpdateSaleOrderDto updateSaleOrderDto)
+    public async Task<ActionResult<SaleOrderDto>> UpdateSaleOrder(Guid id, [FromForm] UpdateSaleOrderDto updateSaleOrderDto)
     {
         try
         {
-            var saleOrder = _repository.SaleOrder.GetSaleOrderById(id);
+            var saleOrder = await _repository.SaleOrder.GetSaleOrderById(id);
 
             if (saleOrder is null)
                 return NotFound();
 
             _mapper.Map(updateSaleOrderDto, saleOrder);
             _repository.SaleOrder.UpdateSaleOrder(saleOrder);
-            _repository.Save();
+            await _repository.SaveAsync();
             
             var saleOrderResponse = _mapper.Map<SaleOrderDto>(saleOrder);
             return Ok(saleOrderResponse);
@@ -109,17 +109,17 @@ public class SaleOrderController : ODataController
     }
     
     [HttpDelete("{id}")]
-    public IActionResult DeleteSaleOrder(Guid id)
+    public async Task<IActionResult> DeleteSaleOrder(Guid id)
     {
         try
         {
-            var saleOrder = _repository.SaleOrder.GetSaleOrderById(id);
+            var saleOrder = await _repository.SaleOrder.GetSaleOrderById(id);
 
             if (saleOrder is null)
                 return NotFound();
 
             _repository.SaleOrder.DeleteSaleOrder(saleOrder);
-            _repository.Save();
+            await _repository.SaveAsync();
             
             return NoContent();
         }

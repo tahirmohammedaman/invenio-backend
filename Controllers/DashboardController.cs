@@ -18,11 +18,11 @@ public class DashboardController : ControllerBase
     }
     
     [HttpGet]
-    public ActionResult<DashboardDto> GetDashboardData()
+    public async Task<ActionResult<DashboardDto>> GetDashboardData()
     {
         try
         {
-            var dashboardData = _repository.GetDashboardData();
+            var dashboardData = await _repository.GetDashboardData();
             return Ok(dashboardData);
         }
         catch (Exception e)

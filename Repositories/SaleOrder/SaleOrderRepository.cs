@@ -9,21 +9,21 @@ public class SaleOrderRepository : RepositoryBase<Models.SaleOrder>, ISaleOrderR
     {
     }
     
-    public IEnumerable<Models.SaleOrder> GetAllSaleOrders() =>
-        FindAll()
+    public async Task<IEnumerable<Models.SaleOrder>> GetAllSaleOrders() =>
+        await FindAll()
             .Include(saleOrder => saleOrder.Customer)
             .Include(saleOrder => saleOrder.Warehouse)
             .Include(saleOrder => saleOrder.Product)
             .ThenInclude(product => product.Category)
             .OrderByDescending(saleOrder => saleOrder.OrderDate)
-            .ToList();
+            .ToListAsync();
     
-    public Models.SaleOrder? GetSaleOrderById(Guid id) =>
-        FindByCondition(saleOrder => saleOrder.SaleOrderId.Equals(id))
+    public async Task<Models.SaleOrder?> GetSaleOrderById(Guid id) =>
+        await FindByCondition(saleOrder => saleOrder.SaleOrderId.Equals(id))
             .Include(saleOrder => saleOrder.Customer)
             .Include(saleOrder => saleOrder.Product)
             .Include(saleOrder => saleOrder.Warehouse)
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
     
     public void CreateSaleOrder(Models.SaleOrder saleOrder) => Create(saleOrder);
     

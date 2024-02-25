@@ -8,60 +8,70 @@ public class DashboardRepository : IDashboardRepository
 {
     private readonly IRepositoryWrapper _repository;
     private readonly IMapper _mapper;
-    
+
     public DashboardRepository(IRepositoryWrapper repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;
     }
-    
-    public DashboardDto GetDashboardData()
+
+    public async Task<DashboardDto> GetDashboardData()
     {
         DashboardDto dashboardData = new DashboardDto();
-        
+
         // ROW 1 : Cards
+        var stocks = await _repository.Stock.GetAllStocks();
         dashboardData.InventoryValue =
-            Math.Round(_repository.Stock.GetAllStocks().Sum(s => s.StockQuantity * s.Product.Price), 2);
-        dashboardData.TotalCustomers = _repository.Customer.GetAllCustomers().Count();
-        dashboardData.TotalProducts = _repository.Product.GetAllProducts().Count();
-        dashboardData.TotalSuppliers = _repository.Supplier.GetAllSuppliers().Count();
+            Math.Round(stocks.Sum(s => s.StockQuantity * s.Product.Price), 2);
         
+        dashboardData.TotalCustomers = (await _repository.Customer.GetAllCustomers()).Count();
+        dashboardData.TotalProducts = (await _repository.Product.GetAllProducts()).Count();
+        dashboardData.TotalSuppliers = (await _repository.Supplier.GetAllSuppliers()).Count();
+
         // ROW 2 : SupplyTimeline
-        dashboardData.SupplyTimeline = GetSupplyTimelineLogs();
-        
+        dashboardData.SupplyTimeline = await GetSupplyTimelineLogs();
+
         // ROW 3 : LowStocks and TopProducts
-        dashboardData.LowStocks = _repository.Stock.GetAllStocks()
+        stocks = await _repository.Stock.GetAllStocks();
+        dashboardData.LowStocks = stocks
             .Where(stock => stock.StockQuantity * stock.QuantityPerUnit < stock.LowStockThreshold)
             .Select(stock => _mapper.Map<StockDto>(stock))
             .ToList();
 
-        dashboardData.TopProducts = GetTopProducts();
-        
+        dashboardData.TopProducts = await GetTopProducts();
+
         // ROW 4 : TopCustomers, TopSuppliers and RecentSupplyOrders
-        dashboardData.TopCustomers = GetTopCustomers();
-        dashboardData.TopSuppliers = GetTopSuppliers();
-        dashboardData.RecentSupplyOrders = _repository.SupplyOrder.GetAllSupplyOrders()
+        dashboardData.TopCustomers = await GetTopCustomers();
+        dashboardData.TopSuppliers = await GetTopSuppliers();
+        var supplyOrders = await _repository.SupplyOrder.GetAllSupplyOrders();
+        dashboardData.RecentSupplyOrders = supplyOrders
             .OrderByDescending(order => order.OrderDate)
             .Take(5)
             .Select(order => _mapper.Map<SupplyOrderDto>(order))
             .ToList();
-        
+
         return dashboardData;
     }
-    
-    private ICollection<SupplyTimeLineLog> GetSupplyTimelineLogs()
+
+
+    private async Task<ICollection<SupplyTimeLineLog>> GetSupplyTimelineLogs()
     {
         var supplyTimelineLogs = new List<SupplyTimeLineLog>();
-        
-        var supplyOrders = _repository.SupplyOrder.GetAllSupplyOrders();
+
+        var supplyOrders = await _repository.SupplyOrder.GetAllSupplyOrders();
         foreach (var order in supplyOrders)
         {
             // Add a timeline log for the order itself
-            supplyTimelineLogs.Add(new SupplyTimeLineLog { Status = "Ordered", SupplyOrder = _mapper.Map<SupplyOrderDto>(order), DateTime = order.OrderDate });
+            supplyTimelineLogs.Add(new SupplyTimeLineLog
+                { Status = "Ordered", SupplyOrder = _mapper.Map<SupplyOrderDto>(order), DateTime = order.OrderDate });
 
             // If the supply order is marked as delivered, add a timeline log for it
             if (order.IsDelivered)
-                supplyTimelineLogs.Add(new SupplyTimeLineLog { Status = "Delivered", SupplyOrder = _mapper.Map<SupplyOrderDto>(order), DateTime = order.DeliveryDate });
+                supplyTimelineLogs.Add(new SupplyTimeLineLog
+                {
+                    Status = "Delivered", SupplyOrder = _mapper.Map<SupplyOrderDto>(order),
+                    DateTime = order.DeliveryDate
+                });
         }
 
         // Sort the supply timeline logs by DateTime in descending order
@@ -70,10 +80,10 @@ public class DashboardRepository : IDashboardRepository
         // Return only the top 10 logs
         return supplyTimelineLogs.Take(10).ToList();
     }
-    
-    private ICollection<TopProductDto> GetTopProducts()
+
+    private async Task<ICollection<TopProductDto>> GetTopProducts()
     {
-        var topProducts = _repository.Product.GetAllProducts()
+        var topProducts = (await _repository.Product.GetAllProducts())
             .Where(product => product.SaleOrders != null)
             .Select(product => new TopProductDto
             {
@@ -87,9 +97,9 @@ public class DashboardRepository : IDashboardRepository
         return topProducts;
     }
 
-    private ICollection<TopCustomerDto> GetTopCustomers()
+    private async Task<ICollection<TopCustomerDto>> GetTopCustomers()
     {
-        var topCustomers = _repository.Customer.GetAllCustomers()
+        var topCustomers = (await _repository.Customer.GetAllCustomers())
             .Where(customer => customer.SaleOrders != null)
             .Select(customer => new TopCustomerDto
             {
@@ -103,9 +113,9 @@ public class DashboardRepository : IDashboardRepository
         return topCustomers;
     }
 
-    private ICollection<TopSupplierDto> GetTopSuppliers()
+    private async Task<ICollection<TopSupplierDto>> GetTopSuppliers()
     {
-        var topSuppliers = _repository.Supplier.GetAllSuppliers()
+        var topSuppliers = (await _repository.Supplier.GetAllSuppliers())
             .Where(supplier => supplier.Supplies != null) // Filter out suppliers with null Supplies
             .Select(supplier => new TopSupplierDto
             {
@@ -121,5 +131,4 @@ public class DashboardRepository : IDashboardRepository
 
         return topSuppliers;
     }
-
 }

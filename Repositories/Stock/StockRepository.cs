@@ -9,19 +9,19 @@ public class StockRepository : RepositoryBase<Models.Stock>, IStockRepository
     {
     }
     
-    public IEnumerable<Models.Stock> GetAllStocks() =>
-        FindAll()
+    public async Task<IEnumerable<Models.Stock>> GetAllStocks() =>
+        await FindAll()
             .OrderBy(stock => stock.Product.Name)
             .Include(stock => stock.Warehouse)
             .Include(stock => stock.Product)
             .ThenInclude(product => product.Category)
-            .ToList();
+            .ToListAsync();
     
-    public Models.Stock? GetStockById(Guid id) =>
-        FindByCondition(stock => stock.StockId.Equals(id))
+    public async Task<Models.Stock?> GetStockById(Guid id) =>
+        await FindByCondition(stock => stock.StockId.Equals(id))
             .Include(stock => stock.Product)
             .ThenInclude(product => product.Category)
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
     
     public void CreateStock(Models.Stock stock) => Create(stock);
     
@@ -29,9 +29,9 @@ public class StockRepository : RepositoryBase<Models.Stock>, IStockRepository
     
     public void DeleteStock(Models.Stock stock) => Delete(stock);
     
-    public Models.Stock? GetStockByProductIdAndWarehouseId(Guid productId, Guid warehouseId) =>
-        FindByCondition(stock => stock.ProductId.Equals(productId) && stock.WarehouseId.Equals(warehouseId))
+    public async Task<Models.Stock?> GetStockByProductIdAndWarehouseId(Guid productId, Guid warehouseId) =>
+        await FindByCondition(stock => stock.ProductId.Equals(productId) && stock.WarehouseId.Equals(warehouseId))
             .Include(stock => stock.Product)
             .ThenInclude(product => product.Category)
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
 }

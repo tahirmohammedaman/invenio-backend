@@ -4,6 +4,6 @@ namespace invenio.Repositories.User;
 
 public interface IUserRepository
 {
-    void CreateUser(Models.User user);
-    Models.User? GetByEmail(string email);
+    Task CreateUser(Models.User user);
+    Task<Models.User?> GetByEmail(string email);
 }

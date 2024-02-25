@@ -25,11 +25,11 @@ public class SupplyController : ODataController
     
     [HttpGet]
     [EnableQuery]
-    public ActionResult<IEnumerable<SupplyDto>> GetAll()
+    public async Task<ActionResult<IEnumerable<SupplyDto>>> GetAll()
     {
         try
         {
-            var supplies = _repository.Supply.GetAllSupplies();
+            var supplies = await _repository.Supply.GetAllSupplies();
             var suppliesResponse = _mapper.Map<IEnumerable<SupplyDto>>(supplies);
             
             return Ok(suppliesResponse);
@@ -43,11 +43,11 @@ public class SupplyController : ODataController
     
     [HttpGet("{id}")]
     [EnableQuery]
-    public ActionResult<SupplyDto> GetSupplyById(Guid id)
+    public async Task<ActionResult<SupplyDto>> GetSupplyById(Guid id)
     {
         try
         {
-            var supply = _repository.Supply.GetSupplyById(id);
+            var supply = await _repository.Supply.GetSupplyById(id);
 
             if (supply is null)
                 return NotFound();
@@ -64,13 +64,13 @@ public class SupplyController : ODataController
     
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    public IActionResult CreateSupply([FromForm] CreateSupplyDto createSupplyDto)
+    public async Task<IActionResult> CreateSupply([FromForm] CreateSupplyDto createSupplyDto)
     {
         try
         {
             var supply = _mapper.Map<Supply>(createSupplyDto);
             _repository.Supply.CreateSupply(supply);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             var supplyDto = _mapper.Map<SupplyDto>(supply);
             return CreatedAtAction(nameof(GetSupplyById), new { id = supply.SupplyId }, supplyDto);
@@ -84,18 +84,18 @@ public class SupplyController : ODataController
     
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
-    public IActionResult UpdateSupply(Guid id, [FromForm] UpdateSupplyDto updateSupplyDto)
+    public async Task<IActionResult> UpdateSupply(Guid id, [FromForm] UpdateSupplyDto updateSupplyDto)
     {
         try
         {
-            var supply = _repository.Supply.GetSupplyById(id);
+            var supply = await _repository.Supply.GetSupplyById(id);
 
             if (supply is null)
                 return NotFound();
 
             _mapper.Map(updateSupplyDto, supply);
             _repository.Supply.UpdateSupply(supply);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             return NoContent();
         }
@@ -108,17 +108,17 @@ public class SupplyController : ODataController
 
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
-    public IActionResult DeleteSupply(Guid id)
+    public async Task<IActionResult> DeleteSupply(Guid id)
     {
         try
         {
-            var supply = _repository.Supply.GetSupplyById(id);
+            var supply = await _repository.Supply.GetSupplyById(id);
 
             if (supply is null)
                 return NotFound();
 
             _repository.Supply.DeleteSupply(supply);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             return NoContent();
         }

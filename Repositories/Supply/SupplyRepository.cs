@@ -9,18 +9,18 @@ public class SupplyRepository : RepositoryBase<Models.Supply>, ISupplyRepository
     {
     }
     
-    public IEnumerable<Models.Supply> GetAllSupplies() =>
-        FindAll()
+    public async Task<IEnumerable<Models.Supply>> GetAllSupplies() =>
+        await FindAll()
             .OrderBy(supply => supply.Supplier.Name)
             .Include(supply => supply.Supplier)
             .Include(supply => supply.Product)
-            .ToList();
+            .ToListAsync();
     
-    public Models.Supply? GetSupplyById(Guid id) =>
-        FindByCondition(supply => supply.SupplyId.Equals(id))
+    public async Task<Models.Supply?> GetSupplyById(Guid id) =>
+        await FindByCondition(supply => supply.SupplyId.Equals(id))
             .Include(supply => supply.Supplier)
             .Include(supply => supply.Product)
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
     
     public void CreateSupply(Models.Supply supply) => Create(supply);
     

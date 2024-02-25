@@ -26,11 +26,11 @@ public class SupplierController : ODataController
 
     [HttpGet]
     [EnableQuery]
-    public ActionResult<IEnumerable<SupplierDto>> GetAll()
+    public async Task<ActionResult<IEnumerable<SupplierDto>>> GetAll()
     {
         try
         {
-            var suppliers = _repository.Supplier.GetAllSuppliers();
+            var suppliers = await _repository.Supplier.GetAllSuppliers();
             var suppliersResponse = _mapper.Map<IEnumerable<SupplierDto>>(suppliers);
 
             return Ok(suppliersResponse);
@@ -44,11 +44,11 @@ public class SupplierController : ODataController
 
     [HttpGet("{id}")]
     [EnableQuery]
-    public ActionResult<SupplierDto> GetSupplierById(Guid id)
+    public async Task<ActionResult<SupplierDto>> GetSupplierById(Guid id)
     {
         try
         {
-            var supplier = _repository.Supplier.GetSupplierById(id);
+            var supplier = await _repository.Supplier.GetSupplierById(id);
 
             if (supplier is null)
                 return NotFound();
@@ -65,7 +65,7 @@ public class SupplierController : ODataController
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    public IActionResult CreateSupplier([FromForm] CreateSupplierDto createSupplierDto)
+    public async Task<IActionResult> CreateSupplier([FromForm] CreateSupplierDto createSupplierDto)
     {
         try
         {
@@ -74,7 +74,7 @@ public class SupplierController : ODataController
                 supplier.LogoPath = FileService.UploadFile(createSupplierDto.Logo);
 
             _repository.Supplier.CreateSupplier(supplier);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             var supplierDto = _mapper.Map<SupplierDto>(supplier);
 
@@ -89,11 +89,11 @@ public class SupplierController : ODataController
 
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
-    public IActionResult UpdateSupplier(Guid id, [FromForm] UpdateSupplierDto updateSupplierDto)
+    public async Task<IActionResult> UpdateSupplier(Guid id, [FromForm] UpdateSupplierDto updateSupplierDto)
     {
         try
         {
-            var supplier = _repository.Supplier.GetSupplierById(id);
+            var supplier = await _repository.Supplier.GetSupplierById(id);
             if (supplier is null)
                 return NotFound();
 
@@ -106,7 +106,7 @@ public class SupplierController : ODataController
             }
 
             _repository.Supplier.UpdateSupplier(supplier);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             var supplierResponse = _mapper.Map<SupplierDto>(supplier);
             return Ok(supplierResponse);
@@ -120,11 +120,11 @@ public class SupplierController : ODataController
 
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
-    public IActionResult DeleteSupplier(Guid id)
+    public async Task<IActionResult> DeleteSupplier(Guid id)
     {
         try
         {
-            var supplier = _repository.Supplier.GetSupplierById(id);
+            var supplier = await _repository.Supplier.GetSupplierById(id);
             if (supplier is null)
                 return NotFound();
 
@@ -132,7 +132,7 @@ public class SupplierController : ODataController
                 FileService.DeleteFile(supplier.LogoPath);
 
             _repository.Supplier.DeleteSupplier(supplier);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             return NoContent();
         }

@@ -9,17 +9,17 @@ public class CustomerRepository : RepositoryBase<Models.Customer>, ICustomerRepo
     {
     }
 
-    public IEnumerable<Models.Customer> GetAllCustomers() =>
-        FindAll()
+    public async Task<IEnumerable<Models.Customer>> GetAllCustomers() =>
+        await FindAll()
             .OrderBy(customer => customer.Name)
             .Include(customer => customer.SaleOrders) // Include SaleOrders relation
             .ThenInclude(saleOrder => saleOrder.Product) // Include Product relation within SaleOrders
-            .ToList();
+            .ToListAsync();
 
 
-    public Models.Customer? GetCustomerById(Guid id) =>
-        FindByCondition(customer => customer.CustomerId.Equals(id))
-            .FirstOrDefault();
+    public async Task<Models.Customer?> GetCustomerById(Guid id) =>
+        await FindByCondition(customer => customer.CustomerId.Equals(id))
+            .FirstOrDefaultAsync();
 
     public void CreateCustomer(Models.Customer customer) => Create(customer);
 

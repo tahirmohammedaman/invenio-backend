@@ -143,8 +143,8 @@ public class RepositoryWrapper : IRepositoryWrapper
         }
     }
     
-    public void Save()
+    public async Task SaveAsync()
     {
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 }

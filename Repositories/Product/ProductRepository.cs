@@ -9,22 +9,22 @@ public class ProductRepository: RepositoryBase<Models.Product>, IProductReposito
     {
     }
     
-    public IEnumerable<Models.Product> GetAllProducts() =>
-        FindAll()
+    public async Task<IEnumerable<Models.Product>> GetAllProducts() =>
+        await FindAll()
             .OrderBy(product => product.Name)
             .Include(product => product.Category)
             .Include(product => product.SaleOrders) // Include SaleOrders relation
             .ThenInclude(saleOrder => saleOrder.Customer) // Include Customer relation within SaleOrders
             .Include(product => product.Supplies) // Include Supplies relation
             .ThenInclude(supply => supply.Supplier) // Include Supplier relation within Supplies
-            .ToList();
+            .ToListAsync();
     
-    public Models.Product? GetProductById(Guid id) =>
-        FindByCondition(product => product.ProductId.Equals(id))
+    public async Task<Models.Product?> GetProductById(Guid id) =>
+        await FindByCondition(product => product.ProductId.Equals(id))
             .Include(product => product.Category)
             .Include(product => product.Supplies)
             .Include(product => product.Stocks)
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
     
     public void CreateProduct(Models.Product product) => Create(product);
     

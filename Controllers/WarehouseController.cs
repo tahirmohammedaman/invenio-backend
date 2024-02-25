@@ -25,11 +25,11 @@ public class WarehouseController : ODataController
 
     [HttpGet]
     [EnableQuery]
-    public ActionResult<IEnumerable<WarehouseDto>> GetAll()
+    public async Task<ActionResult<IEnumerable<WarehouseDto>>> GetAll()
     {
         try
         {
-            var warehouses = _repository.Warehouse.GetAllWarehouses();
+            var warehouses = await _repository.Warehouse.GetAllWarehouses();
             var warehousesResponse = _mapper.Map<IEnumerable<WarehouseDto>>(warehouses);
 
             return Ok(warehousesResponse);
@@ -43,11 +43,11 @@ public class WarehouseController : ODataController
 
     [HttpGet("{id}")]
     [EnableQuery]
-    public ActionResult<WarehouseDto> GetWarehouseById(Guid id)
+    public async Task<ActionResult<WarehouseDto>> GetWarehouseById(Guid id)
     {
         try
         {
-            var warehouse = _repository.Warehouse.GetWarehouseById(id);
+            var warehouse = await _repository.Warehouse.GetWarehouseById(id);
 
             if (warehouse is null)
                 return NotFound();
@@ -64,13 +64,13 @@ public class WarehouseController : ODataController
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    public IActionResult CreateWarehouse([FromForm] CreateWarehouseDto createWarehouseDto)
+    public async Task<IActionResult> CreateWarehouse([FromForm] CreateWarehouseDto createWarehouseDto)
     {
         try
         {
             var warehouse = _mapper.Map<Warehouse>(createWarehouseDto);
             _repository.Warehouse.CreateWarehouse(warehouse);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             var warehouseDto = _mapper.Map<WarehouseDto>(warehouse);
 
@@ -85,17 +85,17 @@ public class WarehouseController : ODataController
 
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
-    public IActionResult UpdateWarehouse(Guid id, [FromForm] UpdateWarehouseDto updateWarehouseDto)
+    public async Task<IActionResult> UpdateWarehouse(Guid id, [FromForm] UpdateWarehouseDto updateWarehouseDto)
     {
         try
         {
-            var warehouse = _repository.Warehouse.GetWarehouseById(id);
+            var warehouse = await _repository.Warehouse.GetWarehouseById(id);
             if (warehouse is null)
                 return NotFound();
 
             _mapper.Map(updateWarehouseDto, warehouse);
             _repository.Warehouse.UpdateWarehouse(warehouse);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             return NoContent();
         }
@@ -108,16 +108,16 @@ public class WarehouseController : ODataController
 
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
-    public IActionResult DeleteWarehouse(Guid id)
+    public async Task<IActionResult> DeleteWarehouse(Guid id)
     {
         try
         {
-            var warehouse = _repository.Warehouse.GetWarehouseById(id);
+            var warehouse = await _repository.Warehouse.GetWarehouseById(id);
             if (warehouse is null)
                 return NotFound();
 
             _repository.Warehouse.DeleteWarehouse(warehouse);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             return NoContent();
         }

@@ -9,22 +9,22 @@ public class SupplyOrderRepository : RepositoryBase<Models.SupplyOrder>, ISupply
     {
     }
     
-    public IEnumerable<Models.SupplyOrder> GetAllSupplyOrders() =>
-        FindAll()
+    public async Task<IEnumerable<Models.SupplyOrder>> GetAllSupplyOrders() =>
+        await FindAll()
             .Include(supplyOrder => supplyOrder.Warehouse)
             .Include(supplyOrder => supplyOrder.Supply)
             .Include(supplyOrder => supplyOrder.Supply.Product)
             .Include(supplyOrder => supplyOrder.Supply.Supplier)
             .OrderByDescending(supplyOrder => supplyOrder.OrderDate)
-            .ToList();
+            .ToListAsync();
     
-    public Models.SupplyOrder? GetSupplyOrderById(Guid id) =>
-        FindByCondition(supplyOrder => supplyOrder.SupplyOrderId.Equals(id))
+    public async Task<Models.SupplyOrder?> GetSupplyOrderById(Guid id) =>
+        await FindByCondition(supplyOrder => supplyOrder.SupplyOrderId.Equals(id))
             .Include(supplyOrder => supplyOrder.Warehouse)
             .Include(supplyOrder => supplyOrder.Supply)
             .Include(supplyOrder => supplyOrder.Supply.Product)
             .Include(supplyOrder => supplyOrder.Supply.Supplier)
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
     
     public void CreateSupplyOrder(Models.SupplyOrder supplyOrder) => Create(supplyOrder);
     

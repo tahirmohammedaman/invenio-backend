@@ -9,14 +9,14 @@ public class WarehouseRepository : RepositoryBase<Models.Warehouse>, IWarehouseR
     {
     }
     
-    public IEnumerable<Models.Warehouse> GetAllWarehouses() =>
-        FindAll()
+    public async Task<IEnumerable<Models.Warehouse>> GetAllWarehouses() =>
+        await FindAll()
             .OrderBy(warehouse => warehouse.Name)
-            .ToList();
+            .ToListAsync();
     
-    public Models.Warehouse? GetWarehouseById(Guid id) =>
-        FindByCondition(warehouse => warehouse.WarehouseId.Equals(id))
-            .FirstOrDefault();
+    public async Task<Models.Warehouse?> GetWarehouseById(Guid id) =>
+        await FindByCondition(warehouse => warehouse.WarehouseId.Equals(id))
+            .FirstOrDefaultAsync();
     
     public void CreateWarehouse(Models.Warehouse warehouse) => Create(warehouse);
     

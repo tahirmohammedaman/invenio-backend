@@ -34,5 +34,5 @@ public interface IRepositoryWrapper
     
     ISaleOrderRepository SaleOrder { get; }
     
-    void Save();
+    Task SaveAsync();
 }

@@ -9,16 +9,16 @@ public class CategoryRepository : RepositoryBase<Models.Category>, ICategoryRepo
     {
     }
     
-    public IEnumerable<Models.Category> GetAllCategories() =>
-        FindAll()
+    public async Task<IEnumerable<Models.Category>> GetAllCategories() =>
+        await FindAll()
             .OrderBy(category => category.Name)
             .Include(category => category.ParentCategory)
-            .ToList();
+            .ToListAsync();
     
-    public Models.Category GetCategoryById(Guid id) =>
-        FindByCondition(category => category.CategoryId.Equals(id))
+    public async Task<Models.Category?> GetCategoryById(Guid id) =>
+        await FindByCondition(category => category.CategoryId.Equals(id))
             .Include(category => category.ParentCategory)
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
     
     public void CreateCategory(Models.Category category) => Create(category);
     

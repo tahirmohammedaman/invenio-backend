@@ -24,11 +24,11 @@ public class StockController : ODataController
 
     [HttpGet]
     [EnableQuery]
-    public ActionResult<IEnumerable<StockDto>> GetAll()
+    public async Task<ActionResult<IEnumerable<StockDto>>> GetAll()
     {
         try
         {
-            var stocks = _repository.Stock.GetAllStocks();
+            var stocks = await _repository.Stock.GetAllStocks();
             var stocksResponse = _mapper.Map<IEnumerable<StockDto>>(stocks);
 
             return Ok(stocksResponse);
@@ -42,11 +42,11 @@ public class StockController : ODataController
 
     [HttpGet("{id}")]
     [EnableQuery]
-    public ActionResult<StockDto> GetStockById(Guid id)
+    public async Task<ActionResult<StockDto>> GetStockById(Guid id)
     {
         try
         {
-            var stock = _repository.Stock.GetStockById(id);
+            var stock = await _repository.Stock.GetStockById(id);
 
             if (stock is null)
                 return NotFound();
@@ -63,13 +63,13 @@ public class StockController : ODataController
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    public IActionResult CreateStock([FromForm] CreateStockDto createStockDto)
+    public async Task<IActionResult> CreateStock([FromForm] CreateStockDto createStockDto)
     {
         try
         {
             var stock = _mapper.Map<Models.Stock>(createStockDto);
             _repository.Stock.CreateStock(stock);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             var stockResponse = _mapper.Map<StockDto>(stock);
             
@@ -84,17 +84,17 @@ public class StockController : ODataController
     
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
-    public IActionResult UpdateStock(Guid id, [FromForm] UpdateStockDto updateStockDto)
+    public async Task<IActionResult> UpdateStock(Guid id, [FromForm] UpdateStockDto updateStockDto)
     {
         try
         {
-            var stock = _repository.Stock.GetStockById(id);
+            var stock = await _repository.Stock.GetStockById(id);
             if (stock is null)
                 return NotFound();
 
             _mapper.Map(updateStockDto, stock);
             _repository.Stock.UpdateStock(stock);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             return NoContent();
         }
@@ -107,16 +107,16 @@ public class StockController : ODataController
     
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
-    public IActionResult DeleteStock(Guid id)
+    public async Task<IActionResult> DeleteStock(Guid id)
     {
         try
         {
-            var stock = _repository.Stock.GetStockById(id);
+            var stock = await _repository.Stock.GetStockById(id);
             if (stock is null)
                 return NotFound();
 
             _repository.Stock.DeleteStock(stock);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             return NoContent();
         }

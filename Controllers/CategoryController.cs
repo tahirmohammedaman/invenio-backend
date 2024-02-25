@@ -25,11 +25,11 @@ public class CategoryController : ODataController
     
     [HttpGet]
     [EnableQuery]
-    public ActionResult<IEnumerable<CategoryDto>> GetAll()
+    public async Task<ActionResult<IEnumerable<CategoryDto>>> GetAll()
     {
         try
         {
-            var categories = _repository.Category.GetAllCategories();
+            var categories = await _repository.Category.GetAllCategories();
             var categoriesResponse = _mapper.Map<IEnumerable<CategoryDto>>(categories);
             
             return Ok(categoriesResponse);
@@ -43,11 +43,11 @@ public class CategoryController : ODataController
     
     [HttpGet("{id}")]
     [EnableQuery]
-    public ActionResult<CategoryDto> GetCategoryById(Guid id)
+    public async Task<ActionResult<CategoryDto>> GetCategoryById(Guid id)
     {
         try
         {
-            var category = _repository.Category.GetCategoryById(id);
+            var category = await _repository.Category.GetCategoryById(id);
 
             if (category is null)
                 return NotFound();
@@ -64,7 +64,7 @@ public class CategoryController : ODataController
     
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    public ActionResult<CategoryDto> CreateCategory([FromForm] CreateCategoryDto categoryDto)
+    public async Task<ActionResult<CategoryDto>> CreateCategory([FromForm] CreateCategoryDto categoryDto)
     {
         try
         {
@@ -73,7 +73,7 @@ public class CategoryController : ODataController
                 category.ImagePath = FileService.UploadFile(categoryDto.Image);
             
             _repository.Category.CreateCategory(category);
-            _repository.Save();
+            await _repository.SaveAsync();
             
             var categoryResponse = _mapper.Map<CategoryDto>(category);
             return CreatedAtAction(nameof(GetCategoryById), new {id = categoryResponse.CategoryId}, categoryResponse);
@@ -87,11 +87,11 @@ public class CategoryController : ODataController
     
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
-    public ActionResult DeleteCategory(Guid id)
+    public async Task<ActionResult> DeleteCategory(Guid id)
     {
         try
         {
-            var category = _repository.Category.GetCategoryById(id);
+            var category = await _repository.Category.GetCategoryById(id);
             if (category is null)
                 return NotFound();
             
@@ -99,7 +99,7 @@ public class CategoryController : ODataController
                 FileService.DeleteFile(category.ImagePath);
             
             _repository.Category.DeleteCategory(category);
-            _repository.Save();
+            await _repository.SaveAsync();
             
             return NoContent();
         }
@@ -112,11 +112,11 @@ public class CategoryController : ODataController
     
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
-    public ActionResult UpdateCategory(Guid id, [FromForm] UpdateCategoryDto updateCategoryDto)
+    public async Task<ActionResult> UpdateCategory(Guid id, [FromForm] UpdateCategoryDto updateCategoryDto)
     {
         try
         {
-            var category = _repository.Category.GetCategoryById(id);
+            var category = await _repository.Category.GetCategoryById(id);
             if (category is null)
                 return NotFound();
             
@@ -129,7 +129,7 @@ public class CategoryController : ODataController
             }
             
             _repository.Category.UpdateCategory(category);
-            _repository.Save(); 
+            await _repository.SaveAsync(); 
             
             return NoContent();
         }

@@ -28,11 +28,11 @@ public class SupplyOrderController : ODataController
     
     [HttpGet]
     [EnableQuery]
-    public ActionResult<IEnumerable<SupplyOrderDto>> GetAll()
+    public async Task<ActionResult<IEnumerable<SupplyOrderDto>>> GetAll()
     {
         try
         {
-            var supplyOrders = _repository.SupplyOrder.GetAllSupplyOrders();
+            var supplyOrders = await _repository.SupplyOrder.GetAllSupplyOrders();
             var supplyOrdersResponse = _mapper.Map<IEnumerable<SupplyOrderDto>>(supplyOrders);
             
             return Ok(supplyOrdersResponse);
@@ -46,11 +46,11 @@ public class SupplyOrderController : ODataController
     
     [HttpGet("{id}")]
     [EnableQuery]
-    public ActionResult<SupplyOrderDto> GetSupplyOrderById(Guid id)
+    public async Task<ActionResult<SupplyOrderDto>> GetSupplyOrderById(Guid id)
     {
         try
         {
-            var supplyOrder = _repository.SupplyOrder.GetSupplyOrderById(id);
+            var supplyOrder = await _repository.SupplyOrder.GetSupplyOrderById(id);
 
             if (supplyOrder is null)
                 return NotFound();
@@ -67,7 +67,7 @@ public class SupplyOrderController : ODataController
     
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    public IActionResult CreateSupplyOrder([FromForm] CreateSupplyOrderDto createSupplyOrderDto)
+    public async Task<IActionResult> CreateSupplyOrder([FromForm] CreateSupplyOrderDto createSupplyOrderDto)
     {
         try
         {
@@ -78,7 +78,7 @@ public class SupplyOrderController : ODataController
 
             if (createSupplyOrderDto.DeliveryDate is null)
             {
-                var supply = _repository.Supply.GetSupplyById(supplyOrder.SupplyId);
+                var supply = await _repository.Supply.GetSupplyById(supplyOrder.SupplyId);
                 if (supply is not null && supply.SupplyLeadTime.HasValue && supply.SupplyLeadTime.Value > 0)
                 {
                     supplyOrder.DeliveryDate = supplyOrder.OrderDate.AddDays(supply.SupplyLeadTime.Value).ToUniversalTime();
@@ -86,7 +86,7 @@ public class SupplyOrderController : ODataController
             }
                 
             _repository.SupplyOrder.CreateSupplyOrder(supplyOrder);
-            _repository.Save();
+            await _repository.SaveAsync();
             
             // Send mail
             var mail = new Mail(
@@ -94,7 +94,6 @@ public class SupplyOrderController : ODataController
                 "New Supply Order",
                 "A new supply order has been created"
                 );
-            // AWAIT
             _mailSender.SendMail(mail);
             
             var supplyOrderDto = _mapper.Map<SupplyOrderDto>(supplyOrder);
@@ -109,17 +108,17 @@ public class SupplyOrderController : ODataController
     
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
-    public IActionResult UpdateSupplyOrder(Guid id, [FromForm] UpdateSupplyOrderDto updateSupplyOrderDto)
+    public async Task<IActionResult> UpdateSupplyOrder(Guid id, [FromForm] UpdateSupplyOrderDto updateSupplyOrderDto)
     {
         try
         {
-            var supplyOrder = _repository.SupplyOrder.GetSupplyOrderById(id);
+            var supplyOrder = await _repository.SupplyOrder.GetSupplyOrderById(id);
             if (supplyOrder is null)
                 return NotFound();
 
             _mapper.Map(updateSupplyOrderDto, supplyOrder);
             _repository.SupplyOrder.UpdateSupplyOrder(supplyOrder);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             return NoContent();
         }
@@ -132,17 +131,17 @@ public class SupplyOrderController : ODataController
 
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
-    public IActionResult DeleteSupplyOrder(Guid id)
+    public async Task<IActionResult> DeleteSupplyOrder(Guid id)
     {
         try
         {
-            var supplyOrder = _repository.SupplyOrder.GetSupplyOrderById(id);
+            var supplyOrder = await _repository.SupplyOrder.GetSupplyOrderById(id);
 
             if (supplyOrder is null)
                 return NotFound();
 
             _repository.SupplyOrder.DeleteSupplyOrder(supplyOrder);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             return NoContent();
         }
@@ -156,11 +155,11 @@ public class SupplyOrderController : ODataController
     [HttpPost]
     [Route("{id}/delivery")]
     [Authorize(Roles = "Admin")]
-    public IActionResult MarkSupplyOrderAsDeliveredAndUpdateStock (Guid id)
+    public async Task<IActionResult> MarkSupplyOrderAsDeliveredAndUpdateStock (Guid id)
     {
         try
         {
-            var supplyOrder = _repository.SupplyOrder.GetSupplyOrderById(id);
+            var supplyOrder = await _repository.SupplyOrder.GetSupplyOrderById(id);
             if (supplyOrder is null)
                 return NotFound();
 
@@ -169,7 +168,9 @@ public class SupplyOrderController : ODataController
             _repository.SupplyOrder.UpdateSupplyOrder(supplyOrder);
             
             // Update stock
-            var stock = _repository.Stock.GetStockByProductIdAndWarehouseId(supplyOrder.Supply.ProductId, supplyOrder.WarehouseId);
+            var stock = 
+                await _repository.Stock.GetStockByProductIdAndWarehouseId(supplyOrder.Supply.ProductId, supplyOrder.WarehouseId);
+            
             if (stock is not null)
             {
                 stock.StockQuantity += supplyOrder.Quantity;
@@ -187,7 +188,8 @@ public class SupplyOrderController : ODataController
                 };
                 _repository.Stock.CreateStock(stock);
             }
-            _repository.Save();
+            
+            await _repository.SaveAsync();
 
             // Send mail
             var mail = new Mail(
@@ -195,7 +197,6 @@ public class SupplyOrderController : ODataController
                 "Supply order delivery",
                 "Supply order has been delivered"
             );
-            // AWAIT
             _mailSender.SendMail(mail);
             
             return NoContent();
