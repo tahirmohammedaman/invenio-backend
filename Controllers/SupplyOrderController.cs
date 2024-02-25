@@ -162,6 +162,9 @@ public class SupplyOrderController : ODataController
             var supplyOrder = await _repository.SupplyOrder.GetSupplyOrderById(id);
             if (supplyOrder is null)
                 return NotFound();
+            
+            if (supplyOrder.IsDelivered)
+                return BadRequest("Supply order has already been delivered");
 
             supplyOrder.DeliveryDate = DateTime.Now.ToUniversalTime();
             supplyOrder.IsDelivered = true;
