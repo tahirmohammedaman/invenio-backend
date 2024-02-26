@@ -84,7 +84,7 @@ public class SaleOrderController : ODataController
         }
     }
     
-    [HttpPut("{id}")]
+    [HttpPatch("{id}")]
     public async Task<ActionResult<SaleOrderDto>> UpdateSaleOrder(Guid id, [FromForm] UpdateSaleOrderDto updateSaleOrderDto)
     {
         try

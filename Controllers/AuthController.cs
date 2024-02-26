@@ -74,4 +74,5 @@ public class AuthController : ControllerBase
         
         return BadRequest("Invalid password");
     }
+    
 }

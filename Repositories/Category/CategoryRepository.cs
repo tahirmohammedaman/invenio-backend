@@ -8,7 +8,7 @@ public class CategoryRepository : RepositoryBase<Models.Category>, ICategoryRepo
     public CategoryRepository(InvenioContext context) : base(context)
     {
     }
-    
+
     public async Task<IEnumerable<Models.Category>> GetAllCategories() =>
         await FindAll()
             .OrderBy(category => category.Name)

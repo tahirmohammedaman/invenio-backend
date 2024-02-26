@@ -86,7 +86,7 @@ public class CustomerController : ODataController
         }
     }
     
-    [HttpPut("{id}")]
+    [HttpPatch("{id}")]
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult<CustomerDto>> UpdateCustomer(Guid id, [FromForm] UpdateCustomerDto updateCustomerDto)
     {

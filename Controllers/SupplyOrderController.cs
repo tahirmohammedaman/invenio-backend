@@ -106,7 +106,7 @@ public class SupplyOrderController : ODataController
         }
     }
     
-    [HttpPut("{id}")]
+    [HttpPatch("{id}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateSupplyOrder(Guid id, [FromForm] UpdateSupplyOrderDto updateSupplyOrderDto)
     {

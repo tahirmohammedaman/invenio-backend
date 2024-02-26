@@ -18,5 +18,5 @@ public class UserRepository : IUserRepository
     }
 
     public async Task<Models.User?> GetByEmail(string email) =>
-        await Context.Set<Models.User>().AsNoTracking().FirstAsync(u => u.Email == email);
+        await Context.Set<Models.User>().AsNoTracking().FirstOrDefaultAsync(u => u.Email == email);
 }

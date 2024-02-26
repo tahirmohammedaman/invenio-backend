@@ -83,7 +83,7 @@ public class WarehouseController : ODataController
         }
     }
 
-    [HttpPut("{id}")]
+    [HttpPatch("{id}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateWarehouse(Guid id, [FromForm] UpdateWarehouseDto updateWarehouseDto)
     {

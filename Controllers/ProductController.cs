@@ -91,7 +91,7 @@ public class ProductController : ODataController
         }
     }
 
-    [HttpPut("{id}")]
+    [HttpPatch("{id}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateProduct(Guid id, [FromForm] UpdateProductDto updateProductDto)
     {

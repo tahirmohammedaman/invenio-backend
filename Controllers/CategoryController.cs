@@ -110,7 +110,7 @@ public class CategoryController : ODataController
         }
     }
     
-    [HttpPut("{id}")]
+    [HttpPatch("{id}")]
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult> UpdateCategory(Guid id, [FromForm] UpdateCategoryDto updateCategoryDto)
     {

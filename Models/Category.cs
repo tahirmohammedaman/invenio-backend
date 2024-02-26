@@ -12,7 +12,8 @@ public class Category
     [Required]
     public string Name { get; set; }
 
-    [Required] public string ImagePath { get; set; } = "default_category_image.svg";
+    [Required]
+    public string ImagePath { get; set; } = "default_category_image.svg";
     
     public string? Description { get; set; }
     

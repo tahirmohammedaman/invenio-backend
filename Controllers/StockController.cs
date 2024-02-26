@@ -82,7 +82,7 @@ public class StockController : ODataController
         }
     }
     
-    [HttpPut("{id}")]
+    [HttpPatch("{id}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateStock(Guid id, [FromForm] UpdateStockDto updateStockDto)
     {

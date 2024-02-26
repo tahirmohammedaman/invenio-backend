@@ -82,7 +82,7 @@ public class SupplyController : ODataController
         }
     }
     
-    [HttpPut("{id}")]
+    [HttpPatch("{id}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateSupply(Guid id, [FromForm] UpdateSupplyDto updateSupplyDto)
     {
