@@ -53,6 +53,7 @@ public class MappingProfile : Profile
         
         // User
         CreateMap<RegisterDto, Models.User>();
+        CreateMap<Models.User, UserDto>();
         
         // Customer
         CreateMap<Models.Customer, CustomerDto>();

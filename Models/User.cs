@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Security.Cryptography;
 
 namespace invenio.Models;
 
@@ -8,7 +7,7 @@ public class User
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int UserId { get; set; }
+    public Guid UserId { get; set; }
     
     [Required]
     public string FirstName { get; set; }
@@ -25,5 +24,11 @@ public class User
     [Required] public byte[] Salt { get; set; }
     
     [Required]
-    public string Role { get; set; } = "User";
+    public Role Role { get; set; }
+}
+
+public enum Role
+{
+    Basic,
+    Admin
 }

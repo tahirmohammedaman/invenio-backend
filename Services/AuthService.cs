@@ -28,4 +28,10 @@ public class AuthService
         var hashToCompare = Rfc2898DeriveBytes.Pbkdf2(password, salt, iterations, algorithm, saltSize);
         return CryptographicOperations.FixedTimeEquals(hashToCompare, Convert.FromHexString(hash));
     }
+
+    public static string GeneratePassword()
+    {
+        var choices = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()[]{}<>.,";
+        return RandomNumberGenerator.GetString(choices, 10);
+    }
 }

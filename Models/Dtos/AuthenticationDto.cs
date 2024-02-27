@@ -1,16 +1,29 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace invenio.Models.Dtos;
 
 public record RegisterDto
 {
-    public string FirstName { get; set; }
+    [Required] public string FirstName { get; set; }
+    [Required] public string LastName { get; set; }
+    [Required] public string Email { get; set; }
+    public string? Password { get; set; }
+    [Required] public Role Role { get; set; }
+}
+
+public record UserDto
+{
+    public Guid UserId { get; set; }
     public string LastName { get; set; }
     public string Email { get; set; }
     public string Password { get; set; }
+    public Role Role { get; set; }
 }
+
 public record LoginDto
 {
-    public string Email { get; set; }
-    public string Password { get; set; }
+    [Required] public string Email { get; set; }
+    [Required] public string Password { get; set; }
 }
 
 public record TokenDto
