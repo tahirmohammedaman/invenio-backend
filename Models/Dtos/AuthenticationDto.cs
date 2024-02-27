@@ -9,6 +9,7 @@ public record RegisterDto
     [Required] public string Email { get; set; }
     public string? Password { get; set; }
     [Required] public Role Role { get; set; }
+    public IFormFile? Image { get; set; }
 }
 
 public record UserDto
@@ -18,6 +19,7 @@ public record UserDto
     public string Email { get; set; }
     public string Password { get; set; }
     public Role Role { get; set; }
+    public string ImagePath { get; set; }
 }
 
 public record LoginDto

@@ -48,6 +48,9 @@ public class AuthController : ControllerBase
             user.Password = hash;
             user.Salt = salt;
 
+            if (userDto.Image is not null)
+                user.ImagePath = FileService.UploadFile(userDto.Image);
+
             await _repository.User.CreateUser(user);
             await _repository.SaveAsync();
             

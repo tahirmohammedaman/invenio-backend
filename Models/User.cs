@@ -25,6 +25,8 @@ public class User
     
     [Required]
     public Role Role { get; set; }
+
+    [Required] public string ImagePath { get; set; } = "default_user_image.png";
 }
 
 public enum Role
