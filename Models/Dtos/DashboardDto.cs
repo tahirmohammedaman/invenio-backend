@@ -13,6 +13,10 @@ public class DashboardDto
     
     // ROW 2
     public ICollection<SupplyTimeLineLog> SupplyTimeline { get; set; }
+    public double TotalSales { get; set; }
+    public double TotalSalesThisMonth { get; set; }
+    public double TotalSalesThisMonthIncrease { get; set; }
+
     
     // ROW 3
     public ICollection<StockDto> LowStocks { get; set; }

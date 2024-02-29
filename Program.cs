@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using ODataModelBuilder = invenio.Data.ODataModelBuilder;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,7 +27,33 @@ builder.Services.AddControllers()
 
 // Swagger documentation
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(opt =>
+{
+    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Invenio API", Version = "v1" });
+    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "bearer"
+    });
+    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+});
 
 // Db context
 builder.Services.AddDbContext<InvenioContext>(options =>
@@ -45,8 +72,8 @@ var mailConfig = builder.Configuration
     .Get<MailConfiguration>();
 builder.Services.AddSingleton(mailConfig);
 
+// Email service
 builder.Services.AddScoped<IMailSender, MailSender>();
-
 
 // Cross-origin requests
 builder.Services.AddCors(opt =>

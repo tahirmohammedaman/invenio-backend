@@ -2,6 +2,7 @@ using AutoMapper;
 using invenio.Models.Dtos.Category;
 using invenio.Repositories;
 using invenio.Services;
+using invenio.Services.Mail;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;

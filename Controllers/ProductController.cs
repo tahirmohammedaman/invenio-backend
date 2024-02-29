@@ -18,7 +18,7 @@ public class ProductController : ODataController
 {
     private readonly IRepositoryWrapper _repository;
     private readonly IMapper _mapper;
-
+    
     public ProductController(IRepositoryWrapper repository, IMapper mapper)
     {
         _repository = repository;

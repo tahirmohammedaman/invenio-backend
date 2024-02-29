@@ -30,6 +30,19 @@ public class DashboardRepository : IDashboardRepository
 
         // ROW 2 : SupplyTimeline
         dashboardData.SupplyTimeline = await GetSupplyTimelineLogs();
+        
+        dashboardData.TotalSales = (await _repository.SaleOrder.GetAllSaleOrders())
+            .Sum(order => order.Price);
+        dashboardData.TotalSalesThisMonth = (await _repository.SaleOrder.GetAllSaleOrders())
+            .Where(order => order.OrderDate.Month == DateTime.Now.Month)
+            .Sum(order => order.Price);
+        
+        double totalSalesLastMonth = (await _repository.SaleOrder.GetAllSaleOrders())
+            .Where(order => order.OrderDate.Month == DateTime.Now.AddMonths(-1).Month)
+            .Sum(order => order.Price);
+
+        dashboardData.TotalSalesThisMonthIncrease =
+            Math.Round(((dashboardData.TotalSalesThisMonth / totalSalesLastMonth) - 1)* 100, 2);
 
         // ROW 3 : LowStocks and TopProducts
         stocks = await _repository.Stock.GetAllStocks();

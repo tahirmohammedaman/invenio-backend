@@ -22,6 +22,7 @@ public static class ODataModelBuilder
         builder.EntitySet<CustomerDto>("Customers");
         builder.EntitySet<SaleOrderDto>("SaleOrders");
 
+        builder.EntitySet<UserDto>("Users");
         return builder.GetEdmModel();
     }
 }

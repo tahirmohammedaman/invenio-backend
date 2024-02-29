@@ -70,14 +70,14 @@ public class CustomerController : ODataController
         try
         {
             var customer = _mapper.Map<Customer>(createCustomerDto);
-            if (createCustomerDto.Logo is not null)
+            if (createCustomerDto.Logo is not null) 
                 customer.LogoPath = FileService.UploadFile(createCustomerDto.Logo);
             
             _repository.Customer.CreateCustomer(customer);
             await _repository.SaveAsync();
 
             var customerDto = _mapper.Map<CustomerDto>(customer);
-            return CreatedAtRoute(nameof(GetCustomerById), new { id = customer.CustomerId }, customerDto);
+            return CreatedAtAction(nameof(GetCustomerById), new { id = customer.CustomerId }, customerDto);
         }
         catch (Exception e)
         {

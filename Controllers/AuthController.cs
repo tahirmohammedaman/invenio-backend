@@ -9,13 +9,15 @@ using invenio.Services;
 using invenio.Services.Mail;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Microsoft.IdentityModel.Tokens;
 
 namespace invenio.Controllers;
 
 [ApiController]
 [Route("/api/")]
-public class AuthController : ControllerBase
+public class AuthController : ODataController
 {
     private readonly IRepositoryWrapper _repository;
     private readonly IMapper _mapper;
@@ -53,15 +55,18 @@ public class AuthController : ControllerBase
 
             await _repository.User.CreateUser(user);
             await _repository.SaveAsync();
-            
+
             // Send mail
-            var mail = new Mail(
-                new [] { user.Email },
-                "Invenio registration",
-                "Dear " + user.FirstName + " " + user.LastName
-                + ",\nYour temporary password is: " + userDto.Password
-            );
-            _mailSender.SendMail(mail);
+            if (userDto.SendMail)
+            {
+                var mail = new Mail(
+                    new[] { user.Email },
+                    "Invenio registration",
+                    "Dear " + user.FirstName + " " + user.LastName
+                    + ",\nYour temporary password is: " + userDto.Password
+                );
+                _mailSender.SendMail(mail);
+            }
 
             return Ok();
         }
@@ -120,13 +125,14 @@ public class AuthController : ControllerBase
     
     [HttpGet("users")]
     [Authorize(Roles = "Admin")]
+    [EnableQuery]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetAllUsers()
     {
         try
         {
             var users = await _repository.User.GetAllUsers();
             var usersResponse = _mapper.Map<IEnumerable<UserDto>>(users);
-            
+
             return Ok(usersResponse);
         }
         catch (Exception e)

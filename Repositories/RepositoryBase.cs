@@ -27,5 +27,4 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
     
     public void Delete(T entity) =>
         Context.Set<T>().Remove(entity);
-    
 }
